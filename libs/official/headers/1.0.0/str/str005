@@ -1,0 +1,4 @@
+l_b_c: str005
+r_l_s: 1
+k_y_w: strings,chars,characters,text,files,urandom,password,generator,chop
+i_n_f: Returns a random string. Length and type adjustable

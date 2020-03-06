@@ -1,0 +1,4 @@
+l_b_c: str052
+r_l_s: 1
+k_y_w: strings,chars,characters,text,files,tabs,expandtabs,replace,spaces
+i_n_f: Expands tabs to spaces (default 4 spaces per tab)

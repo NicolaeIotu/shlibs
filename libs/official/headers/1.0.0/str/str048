@@ -1,0 +1,4 @@
+l_b_c: str048
+r_l_s: 1
+k_y_w: strings,chars,characters,text,files,align,paragraph,articles,dimension,limit,fold,wordwrap,size,count,maxlength,maximum
+i_n_f: Returns maximum line length in string/file

@@ -1,0 +1,4 @@
+l_b_c: str059
+r_l_s: 1
+k_y_w: strings,chars,characters,text,file
+i_n_f: Returns swapcase version of string/file (lowercase<->UPPERCASE)

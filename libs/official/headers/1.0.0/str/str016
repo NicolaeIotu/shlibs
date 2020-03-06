@@ -1,0 +1,4 @@
+l_b_c: str016
+r_l_s: 1
+k_y_w: strings,chars,characters,text,files,slice,cut,substring,subsequence,region
+i_n_f: Returns portion of string/file between index1 and index2 (end)

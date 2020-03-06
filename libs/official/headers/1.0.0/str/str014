@@ -1,0 +1,4 @@
+l_b_c: str014
+r_l_s: 1
+k_y_w: strings,chars,characters,text,files,padstart,prepend,merge,padsbeginning,add,paste,front,repeat
+i_n_f: Pads front of string/file with sequence until length is reached

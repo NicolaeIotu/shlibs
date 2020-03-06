@@ -1,0 +1,4 @@
+l_b_c: str018
+r_l_s: 1
+k_y_w: strings,chars,characters,text,files,slice,cut,substring,subsequence,mid,start,length,index
+i_n_f: Returns portion of string/file defined by start and length (end)

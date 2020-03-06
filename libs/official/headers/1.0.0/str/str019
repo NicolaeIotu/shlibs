@@ -1,0 +1,4 @@
+l_b_c: str019
+r_l_s: 1
+k_y_w: strings,chars,characters,text,files,insert,add,slice,cut,portion,substring_replace,substr_replace,subsequence,mid
+i_n_f: Replaces portion of string/file defined by start and length(end)

@@ -1,0 +1,4 @@
+l_b_c: str051
+r_l_s: 1
+k_y_w: strings,chars,characters,text,files,align,right,dimension,limit,fold,wordwrap,size,count,alignright,rightalign,wrapword,squeeze,shrink_to_fit
+i_n_f: Align right string/file (+-wrap to size and break words)

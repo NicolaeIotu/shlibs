@@ -1,0 +1,4 @@
+l_b_c: str047
+r_l_s: 1
+k_y_w: strings,chars,characters,text,files,insert,sequence,slice,append,prepend,add,glue
+i_n_f: Outputs string/file after inserting sequence at index

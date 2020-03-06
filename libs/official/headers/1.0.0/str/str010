@@ -1,0 +1,4 @@
+l_b_c: str010
+r_l_s: 1
+k_y_w: strings,chars,characters,text,files,indexof,position,at,first,1st,begin,strstr,stristr,strpos,stripos
+i_n_f: Returns index of the first occurrence of needle in string/file

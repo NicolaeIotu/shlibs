@@ -1,0 +1,4 @@
+l_b_c: str049
+r_l_s: 1
+k_y_w: strings,chars,characters,text,prepend,append,fwd,before,push_front,shift,add,glue
+i_n_f: Append string forward of the first specified string (prepend)

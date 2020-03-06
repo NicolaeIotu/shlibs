@@ -1,0 +1,4 @@
+l_b_c: str067
+r_l_s: 1
+k_y_w: strings,chars,characters,text,files,align,paragraph,articles,dimension,limit,fold,wordwrap,size,count,average
+i_n_f: Returns the average number of chars per line of string/file.

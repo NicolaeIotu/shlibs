@@ -1,0 +1,4 @@
+l_b_c: str066
+r_l_s: 1
+k_y_w: strings,chars,characters,text,files,regionmatches,fits,checks,equals,identical
+i_n_f: Checks if region matches. Works on strings and/or files

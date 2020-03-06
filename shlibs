@@ -1,0 +1,87 @@
+#!/bin/sh
+
+# shlibs is Copyright (C) 2020 Nicolae Iotu, nicolae.g.iotu@gmail.com
+# https://shlibs.org, https://shlibs.net
+# License: Apache-2.0 modified with Convergence Terms (LICENSE-section 10)
+# "Use for free. Contribute rather than diverge."
+
+# Author Nicolae Iotu, nicolae.g.iotu@gmail.com
+
+############################ QUICK RUN ##################################
+# cd /shlibs/folder
+# ./shlibs    ; # ( elevate privileges if required )
+#########################################################################
+
+############################ BASIC USAGE ################################
+# 1.	Define SHLIBS_HOME variable
+#		i.e. SHLIBS_HOME=/location/of/shlibs/folder
+#
+# 2. 	Add shlibs location to PATH variable
+#		i.e. PATH=$SHLIBS_HOME:$PATH ; export PATH
+#
+# 3.	To query shlibs for the code of a library:
+#		shlibs
+#
+# 4.	Use 'shlibs libcode' in your CLI or script
+#		(see https://shlibs.org, https://shlibs.net for details), or
+#
+# 5.	Include plain 'shlibs' in your script and run setup:
+#		shlibs -s path/to/script
+#########################################################################
+
+# TAGS: PRE-H/O
+
+(
+	"unalias" -a
+	umask 0002
+	
+	IFS=`printf '%b' ' \t\n'`
+	export IFS
+	o_ifs=${IFS}
+	export o_ifs
+	
+	if [ -n "${SHLIBS_HOME}" ]; then
+		shlibs_dirpath="${SHLIBS_HOME}"
+	else
+		shlibs_dirpath=`cd "\`dirname -- "${0}" 2>/dev/null\`" ; pwd -L` || exit 1
+	fi
+	export shlibs_dirpath
+	
+	shlibs_cwd=`pwd -L`
+	export shlibs_cwd
+	
+	cd "${shlibs_dirpath}" || exit 1
+	
+	. './var/comp/ptbl/shlibs_redir.sh'
+	if [ "${shlibs_redir_vars_flag}" = '0' ]; then
+		unset shlibs_redir_vars_flag
+		if [ "${SHLIBS_COMPLEX_PIPE}" = '0' ]; then
+			unset SHLIBS_COMPLEX_PIPE
+			./shlibs "${@}" ${shlibs_redir_vars}
+		else
+			unset SHLIBS_COMPLEX_PIPE
+			./shlibs "${@}" "${shlibs_redir_vars}"
+		fi
+		exit ${?}
+	fi
+	
+	tcs='./var/comp/cap/shlibs_test_env.sh'
+	if [ -r "${tcs}" ] ; then :
+	else
+		if type shlibs >/dev/null 2>&1 ; then
+			echo 'Error: do not source shlibs.'
+		else
+			printf "%s %s\n" 'Error: Please make sure shlibs folder is' \
+				'included on PATH, and/or declared as SHLIBS_HOME.'
+		fi
+ 		exit 1
+	fi
+	
+	. './var/shlibs_settings.sh'
+	. './var/comp/shlibs_settings_adjust.sh'
+	
+	. "${tcs}"
+	
+	exec "${SHLIBS_SHELL_PATH}" \
+		'./var/comp/shlibs_handover.sh' "${@}"	
+)
