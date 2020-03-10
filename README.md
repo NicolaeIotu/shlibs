@@ -5,7 +5,7 @@ _Email_: nicolae.g.iotu@gmail.com<br>
 _License_: Apache-2.0 modified with the Convergence Terms
 
 
-** Description: ** 
+**Description:** 
 shlibs targets command line ops, shell scripts and interpretable types of 
 scripts on systems, sub-systems and apps complying with The Open Group® 
 POSIX® IEEE® Std 1003.1-2017 specifications. shlibs is designed to be 

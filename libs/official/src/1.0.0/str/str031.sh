@@ -67,7 +67,7 @@ str031() {
 				
 				srand()
 				for(i=1; i<=n; i++) {
-					x=int(rand()*length(str)-1)+1
+					x=int(rand()*length(str))+1
 					res=res substr(str,x,1)
 					str=substr(str,1,x-1) substr(str,x+1)
 				}
