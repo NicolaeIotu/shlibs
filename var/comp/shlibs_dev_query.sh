@@ -342,12 +342,6 @@ dq_search_keywords() {
 	
 	#important
 	dq_k_search=1
-	
-	# UPDATE: minimum number of official libs in this version of shlibs
-	if [ ${sk_search_count} -lt 30 ]; then
-		s_err "Critical error: No libraries found at ${shlibs_dirpath}/libs"
-		exit 1
-	fi
 }
 
 
@@ -472,7 +466,7 @@ dev_query(){
 			if [ ${dq_show_basic_help} -ne 0 ] && [ ${dq_show_full_help} -ne 0 ] \
 				&& ( [ ${dq_lib_help} -eq 0 ] || [ ${dq_lib_examples} -eq 0 ] ) ; then
 				dq_overwrite_total=$((dq_overwrite_prompt+dq_overwrite_he_ex))
-			else				
+			else
 				if [ ${dq_oob_nav} -eq 1 ]; then
 					dq_overwrite_total=$((dq_overwrite_prompt+\
 						dq_overwrite_listing+dq_overwrite_he_ex+\
@@ -881,14 +875,12 @@ ${dq_count_wording}${dq_block_wording}\n"
 						
 						# print selection info
 						if [ "${1}" = '0' ]; then
-							dq_eqp="\n\tSelected library %s: shlibs %s%s%s%s
-\tFor help use:\n\t\tshlibs -h %s%s
-\tFor examples use:\n\t\tshlibs -x %s%s\n"
-							
+							dq_eqp="\n\tSelected library %s: shlibs %s%s%s
+\tFor help use:\n\t\tshlibs %s-h %s
+\tFor examples use:\n\t\tshlibs %s-x %s\n"
 							
 							dq_tmp_print=$(printf "${dq_eqp}" "${dq_ui}" \
-								"${dq_p_wording}" \
-								"${dq_v_wording}" "${dq_quoted_target_libcode}" \
+								"${dq_p_wording}" "${dq_v_wording}" "${dq_quoted_target_libcode}" \
 								"${dq_v_wording}" "${dq_quoted_target_libcode}" \
 								"${dq_v_wording}" "${dq_quoted_target_libcode}")
 							sdu_fold "${dq_tmp_print}"

@@ -7,7 +7,6 @@
 
 # Author Nicolae Iotu, nicolae.g.iotu@gmail.com
 
-
 str035() {
 	if [ ${#} -gt 2 ]; then
 		isfileinput=1

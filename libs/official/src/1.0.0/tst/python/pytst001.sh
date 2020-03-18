@@ -7,7 +7,6 @@
 
 # Author Nicolae Iotu, nicolae.g.iotu@gmail.com
 
-
 import sys
 
 print('This file has .sh extension in order to pass shlibs tests \

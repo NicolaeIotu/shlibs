@@ -7,20 +7,21 @@
 
 # Author Nicolae Iotu, nicolae.g.iotu@gmail.com
 
-
 tst001_skips='ofc tst'
 tst001_total_libs=0
 tst001_total_tests=0
 tst001_total_tests_passed=0
 tst001_total_tests_skipped=0
 tst001_sep='======================================================================'
+tst001_lib_code=''
+tst001_lib_version=0
 
 tst001() {
 	shlibs_path_esc="$(echo "${shlibs_dirpath}/shlibs" | sed 's/[\/]/\\\//g')"
 	shlibs_path_esc="$(echo "${shlibs_path_esc}" | sed 's/ /\\\\ /g')"
 	
 	if [ ${#} -eq 0 ]; then
-		libs_list="$("${shlibs_dirpath}"/shlibs ofc004)"
+		libs_list="$("${shlibs_dirpath}"/shlibs ofc004 | sort | uniq )"
 		
 		IFS=${nl}
 		for lib in ${libs_list}
@@ -32,13 +33,39 @@ tst001() {
 		done
 		IFS=${o_ifs}
 	else
+		tst001_getv=1
+		tst001_inst_vers=''
+		
 		for prm in "${@}"
 		do
+			# handle any params
+			# get version if any (-v #)
+			if [ "${tst001_getv}" = '0' ]; then
+				tst001_inst_vers="${prm}"
+				tst001_getv=1
+				continue
+			else
+				tst001_getv=1
+			fi
+			
+			if [ "${prm}" = '-v' ]; then
+				tst001_getv=0
+				tst001_inst_vers=''
+				continue
+			else
+				tst001_getv=1
+			fi
+			# end params handling
+			
+			if [ -n "${tst001_inst_vers}" ]; then
+				tst001_inst_vers="-v ${tst001_inst_vers}"
+			fi
+			
 			if tst001_check_skips "${prm}" ; then
 				echo "Testing of '${tst001_skips}' is forbidden."
 				return 1
 			else
-				tst001_test_lib "${prm}"
+				tst001_test_lib "${prm}" "${tst001_inst_vers}"
 			fi
 		done
 	fi
@@ -86,7 +113,8 @@ tst001_test_lib() {
 	tst001_total_libs=$((tst001_total_libs+1))
 	tst001_lib_tests_total=0
 	tst001_lib_tests_passed=0
-	if lib_path=$( "${shlibs_dirpath}"/shlibs -p "${1}" ); then
+	
+	if lib_path=$( eval "${shlibs_dirpath}"/shlibs "${2}" -p "${1}" ); then
 		. "${lib_path}"
 		
 		# i.e. str040_skip_tests=0
@@ -130,6 +158,7 @@ tst001_test_lib() {
 				if [ ${test_line} -eq 0 ]; then
 					test_command="${test_seq}"
 					test_seq="$(echo "${test_seq}" | \
+						sed 's/shlibs /shlibs '"${2}"' /g' | \
 						sed 's/shlibs /'"${shlibs_path_esc}"' /g' )"
 					
 					int_tr="$( eval "${test_seq}" )"
@@ -187,7 +216,7 @@ tst001_help() {
 	echo 'By default only the official libs are tested.'
 	echo 'Use library codes as arguments to test specific libraries from any category.'
 	echo 'If your OS is not listed on https://shlibs.org, https://shlibs.net, or'
-	echo 'if some tests fail, please send the results to the contact above.'
+	echo 'if some tests fail, please send the results to the contacts above.'
 }
 
 tst001_examples() {

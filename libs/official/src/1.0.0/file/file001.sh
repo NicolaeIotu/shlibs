@@ -7,7 +7,6 @@
 
 # Author Nicolae Iotu, nicolae.g.iotu@gmail.com
 
-
 file001() {
 	if [ ${#} -eq 2 ] || [ ${#} -eq 3 ]; then
 		filepath_1=''

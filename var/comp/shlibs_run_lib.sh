@@ -65,6 +65,16 @@ do
 			rl_get_script_path=0
 			shift
 			;;
+		-h)
+			opts_block_default_function=0
+			opts_help=0
+			shift
+			;;
+		-x)
+			opts_block_default_function=0
+			opts_examples=0
+			shift
+			;;
 		*)
 			s_err "Incompatible option ${1}."
 			exit 1
@@ -354,8 +364,8 @@ if [ -f "${rl_lib_path}" ] && [ -r "${rl_lib_path}" ]; then
 	rl_var_script_return_code=0
 	if ({	
 		# help and examples requests are treated differently
-			if [ "${opts_lib_help}" != '0' ] && \
-				[ "${opts_lib_examples}" != '0' ]; then
+			if [ "${opts_help}" != '0' ] && \
+				[ "${opts_examples}" != '0' ]; then
 				# regular requests
 				rl_test_lib_wording_output='2>/dev/null'
 			else
@@ -420,7 +430,7 @@ to source '${rl_dev_code_bn}' and call functions within as required."
 				fi
 			fi
 			
-			if [ "${opts_lib_help}" = '0' ] \
+			if [ "${opts_help}" = '0' ] \
 				|| [ "${dq_lib_help}" = '0' ]; then
 				if type "${rl_dev_code_bn}_help" 2>/dev/null | \
 					${SHLIBS_GREP} 'function' >/dev/null 2>&1 ; then
@@ -446,7 +456,7 @@ Missing '${rl_dev_code_bn}_help' function."
 				exit ${rl_var_script_return_code}
 			fi
 			
-			if [ "${opts_lib_examples}" = '0' ] \
+			if [ "${opts_examples}" = '0' ] \
 				|| [ "${dq_lib_examples}" = '0' ]; then
 				if type "${rl_dev_code_bn}_examples" 2>/dev/null | \
 					${SHLIBS_GREP} 'function' >/dev/null 2>&1 ; then

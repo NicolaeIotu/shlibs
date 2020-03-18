@@ -9,9 +9,8 @@
 
 # TAGS: PRE-H/O, PORTABLE
 
-# format req by Solaris
 if [ -p "/dev/fd/0" ]; then
-	# pipe case
+	# pipe to case
 	shlibs_redirect=0
 else
 	if [ -t 0 ]; then

@@ -15,8 +15,14 @@
 # query shlibs
 if [ ${#} -eq 0 ]; then
 	if [ -t 0 ]; then
-		. './var/comp/shlibs_dev_query.sh'
-		dev_query 0
+		if [ -p "/dev/fd/1" ]; then
+			# piped output case
+			s_err 'No piping allowed in query mode!'
+			exit 1
+		else
+			. './var/comp/shlibs_dev_query.sh'
+			dev_query 0
+		fi
 		sdu_cleanup_tmp_onexit
 	else
 		s_err 'Interactive mode available only in terminal.'

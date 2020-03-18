@@ -7,7 +7,6 @@
 
 # Author Nicolae Iotu, nicolae.g.iotu@gmail.com
 
-
 htm001() {
 	if [ ${#} -gt 1 ] && [ ${#} -lt 5 ]; then
 		isfileinput=1

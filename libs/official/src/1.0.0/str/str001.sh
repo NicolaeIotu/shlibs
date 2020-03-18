@@ -7,7 +7,6 @@
 
 # Author Nicolae Iotu, nicolae.g.iotu@gmail.com
 
-
 str001_assign_str() {
 	if [ ${#str} -lt ${#1} ]; then
 		ndl="${str}"

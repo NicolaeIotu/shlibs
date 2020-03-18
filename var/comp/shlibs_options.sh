@@ -8,7 +8,7 @@
 # Author Nicolae Iotu, nicolae.g.iotu@gmail.com
 
 
-opts_lib_help=1 opts_lib_examples=1 opts_autorun_script=1
+opts_help=1 opts_examples=1 opts_autorun_script=1
 opts_force_cleanup=1 opts_block_default_function=1 opts_last_script=0
 opts_setup_script='' opts_dev_destination='' opts_error_content=''
 opts_scripts_count=0 opts_scripts_processed=0 opts_miss_file_warn=0
@@ -28,7 +28,7 @@ do
 			fi
 			;;
 		-h)
-			opts_lib_help=0
+			opts_help=0
 			if [ ${#} -gt 2 ]; then
 				shift
 			else
@@ -36,7 +36,7 @@ do
 			fi
 			;;
 		-x)
-			opts_lib_examples=0
+			opts_examples=0
 			if [ ${#} -gt 2 ]; then
 				shift
 			else
@@ -142,7 +142,7 @@ fi
 
 
 # handle here help and lib usage requests
-if [ ${opts_lib_help} -eq 0 ] || [ ${opts_lib_examples} -eq 0 ]; then
+if [ ${opts_help} -eq 0 ] || [ ${opts_examples} -eq 0 ]; then
 	# check for malformed options specified after -h
 	
 	if echo "${2}" | ${SHLIBS_GREP} '^-[.]$' >/dev/null 2>&1 ; then
@@ -152,7 +152,7 @@ Use 'shlibs ${1}', or 'shlibs ${1} libcode'"
 	else
 		if [ ${#} -eq 1 ] || [ -z "${2}" ]; then
 			# show shlibs main help
-			if [ ${opts_lib_help} -eq 0 ]; then
+			if [ ${opts_help} -eq 0 ]; then
 				. './var/comp/dlg/shlibs_help.sh'
 				printf "%b" "${SHLIBS_HELP}"
 			else
@@ -208,7 +208,12 @@ fi
 
 
 # start processing scripts
-if [ -t 0 ]; then :
+if [ -t 0 ]; then
+	if [ -p "/dev/fd/1" ]; then
+		# piped output case
+		s_err 'No piping allowed in setup script mode!'
+		exit 1
+	fi
 else
 	s_err 'Interactive mode available only in terminal.'
 	exit 1

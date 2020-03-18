@@ -7,7 +7,6 @@
 
 # Author Nicolae Iotu, nicolae.g.iotu@gmail.com
 
-
 str065() {
 	if [ ${#} -gt 1 ]; then
 		isfileinput=1
@@ -109,7 +108,6 @@ str065_class_aloc() {
 	if [ "${1}" = 'y' ]; then
 		if [ -n "${class_yes}" ]; then
 			eval inst_cname="${cname}"
-			# Mac workaround
 			if [ "${2}" = 'space' ] || [ "${2}" = 'blank' ]; then
 				class_yes="${inst_cname}|${class_yes}"
 			else

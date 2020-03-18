@@ -7,7 +7,6 @@
 
 # Author Nicolae Iotu, nicolae.g.iotu@gmail.com
 
-
 str044() {
 	if [ ${#} -gt 1 ]; then
 		iflag=''

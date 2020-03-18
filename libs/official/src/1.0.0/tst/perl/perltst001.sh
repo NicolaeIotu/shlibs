@@ -7,7 +7,6 @@
 
 # Author Nicolae Iotu, nicolae.g.iotu@gmail.com
 
-
 print "\nThis file has .sh extension in order to pass shlibs tests 
 for official libs. Otherwise this is just a standard perl file 
 used to test shlibs-perl interaction.\n\n";

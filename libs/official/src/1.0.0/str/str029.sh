@@ -7,24 +7,23 @@
 
 # Author Nicolae Iotu, nicolae.g.iotu@gmail.com
 
-
 str029() {
 	if [ ${#} -gt 1 ]; then
 		isfileinput=1
 		filepath=''
 		str=''
-		class_del=''
-		class_keep=''
+		class_no=''
+		class_yes=''
 		
 		while [ ${#} -gt 0 ]
 		do
 			case ${1} in
 				-alnum|-alpha|-blank|-cntrl|-digit|-graph|-lower|-print|-punct|-space|-upper|-xdigit)
-					class_del="${class_del}[:${1#-}:]"
+					str029_class_aloc 'n' "${1#-}"
 					shift
 				;;
 				-kalnum|-kalpha|-kblank|-kcntrl|-kdigit|-kgraph|-klower|-kprint|-kpunct|-kspace|-kupper|-kxdigit)
-					class_keep="${class_keep}[:${1#-k}:]"
+					str029_class_aloc 'y' "${1#-k}"
 					shift
 				;;
 				-f)
@@ -42,11 +41,11 @@ str029() {
 					fi
 				;;
 				--k*)
-					class_keep="${class_keep}${1#--x}"
+					class_yes="${class_yes}${1#--x}"
 					shift
 					;;
 				--*)
-					class_del="${class_del}${1#--}"
+					class_no="${class_no}${1#--}"
 					shift
 					;;
 				*)
@@ -65,26 +64,26 @@ str029() {
 		done
 		
 		if ( [ -n "${str}" ] || [ ${isfileinput} -eq 0 ] ) && \
-			( [ -n "${class_del}" ] || [ -n "${class_keep}" ] ); then
+			( [ -n "${class_no}" ] || [ -n "${class_yes}" ] ); then
 			if [ ${isfileinput} -eq 0 ]; then
-				if [ -n "${class_del}" ]; then
-					if [ -n "${class_keep}" ]; then
-						tr -d ${class_del} <"${filepath}" | tr -dc ${class_keep}
+				if [ -n "${class_no}" ]; then
+					if [ -n "${class_yes}" ]; then
+						tr -d ${class_no} <"${filepath}" | tr -dc ${class_yes}
 					else
-						tr -d ${class_del} <"${filepath}"
+						tr -d ${class_no} <"${filepath}"
 					fi
 				else
-					tr -dc ${class_keep} <"${filepath}"
+					tr -dc ${class_yes} <"${filepath}"
 				fi
 			else
-				if [ -n "${class_del}" ]; then
-					if [ -n "${class_keep}" ]; then
-						echo "${str}" | tr -d ${class_del} | tr -dc ${class_keep}
+				if [ -n "${class_no}" ]; then
+					if [ -n "${class_yes}" ]; then
+						echo "${str}" | tr -d ${class_no} | tr -dc ${class_yes}
 					else
-						echo "${str}" | tr -d ${class_del}
+						echo "${str}" | tr -d ${class_no}
 					fi
 				else
-					echo "${str}" | tr -dc ${class_keep}
+					echo "${str}" | tr -dc ${class_yes}
 				fi
 			fi	
 		else
@@ -94,6 +93,35 @@ str029() {
 	else
 		printf "${S_ERR_1}" "${rl_dev_code}"
 		return 1
+	fi
+}
+
+str029_class_aloc() {
+	ctype=$(echo "${2}" | dd conv=ucase 2>/dev/null)
+	cname=$(printf '${SHLIBS_CCLASS_%s}' "${ctype}")
+	
+	if [ "${1}" = 'y' ]; then
+		if [ -n "${class_yes}" ]; then
+			eval inst_cname="${cname}"
+			if [ "${2}" = 'space' ] || [ "${2}" = 'blank' ]; then
+				class_yes="${inst_cname}|${class_yes}"
+			else
+				class_yes="${class_yes}|${inst_cname}"
+			fi
+		else
+			eval class_yes="${cname}"
+		fi
+	else
+		if [ -n "${class_no}" ]; then
+			eval inst_cname="${cname}"
+			if [ "${2}" = 'space' ] || [ "${2}" = 'blank' ]; then
+				class_no="${inst_cname}|${class_no}"
+			else
+				class_no="${class_no}|${inst_cname}"
+			fi
+		else
+			eval class_no="${cname}"
+		fi
 	fi
 }
 
