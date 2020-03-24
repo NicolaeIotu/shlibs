@@ -9,7 +9,8 @@
 
 
 SHLIBS_SETUP_DIALOG_BASIC_HELP="\t${SHLIBS_MATCH_HIGHLIGHT} Usage ${SHLIBS_MATCH_HIGHLIGHT}
-\t[keywords] search keywords (2 characters minimum; k+keywords = focused search)
+\t[keywords] focused search for keywords (2 characters minimum)
+\t[k+keywords] unfocused search for keywords (2 characters minimum)
 \t[c] Clear keywords
 \t[s] Skip setup of instance
 \t[l] skip setup rest of Line

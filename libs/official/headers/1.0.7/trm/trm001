@@ -1,0 +1,4 @@
+l_b_c: trm001
+r_l_s: 1
+k_y_w: terminal,cursor,position,vertical,horizontal,up,down,characters
+i_n_f: Get cursor position in terminal (u.o.m. characters)

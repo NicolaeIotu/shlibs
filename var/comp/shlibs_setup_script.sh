@@ -7,7 +7,6 @@
 
 # Author Nicolae Iotu, nicolae.g.iotu@gmail.com
 
-
 . ./var/comp/shlibs_dev_query.sh
 
 _s_='[^a-zA-Z0-9_]'
@@ -26,8 +25,9 @@ proc_shlibs_line(){
 		${SHLIBS_AWK} -v SHL="${ss_psl_shlibs_ere}" \
 			'{ print gsub(SHL, "") }')
 	
-	printf "At line #%s found %s instance(s):\n" \
-		"${ss_psl_line_no}" "${ss_psl_shlibs_count}"
+	ss_wording_at_line="At line #${ss_psl_line_no} found ${ss_psl_shlibs_count} instance(s):"
+	ss_intro="${ss_intro}${nl}${ss_wording_at_line}"
+	echo "${ss_wording_at_line}"
 
 	
 	# Prefix - Match - Sufix
@@ -62,11 +62,13 @@ proc_shlibs_line(){
 			# precise match
 			ss_psl_precise_match=$(echo "${ss_psl_match}" | \
 				${SHLIBS_AWK} '{ match($0, /shlibs/); 
-				print substr($0, 1, RSTART-1)"'"${ss_psl_hlt}"'"substr($0, RSTART, 
-				RLENGTH)"'"${ss_psl_hlt}"'"substr($0, RSTART+RLENGTH) }' -)	
+				print substr($0, 1, RSTART-1)"'"${ss_psl_hlt}\033[1;31m"'"substr($0, RSTART, 
+				RLENGTH)"'"\033[m${ss_psl_hlt}"'"substr($0, RSTART+RLENGTH) }' -)
 			
-			echo "- line ${ss_psl_line_no}/instance ${ss_psl_instance_no}: \
+			ss_wording_line="- line ${ss_psl_line_no}/instance ${ss_psl_instance_no}: \
 ${ss_psl_preprefix}${ss_psl_prefix}${ss_psl_precise_match}${ss_psl_sufix}"
+			ss_intro="${ss_intro}${nl}${ss_wording_line}"
+			printf '%s\n' "${ss_wording_line}"
 			
 			if dev_query 1 ; then	
 				if [ -n "${ss_psl_chosen_lib}" ]; then
@@ -87,6 +89,8 @@ ${ss_psl_preprefix}${ss_psl_prefix}${ss_psl_precise_match}${ss_psl_sufix}"
 			fi
 			
 			ss_psl_wlc="${ss_psl_sufix}"
+			ss_psl_chosen_match="$( echo "${ss_psl_chosen_match}" | \
+				sed 's/shlibs/\\033\[1;31mshlibs\\033\[m/' )"
 			ss_psl_preprefix="${ss_psl_preprefix}${ss_psl_prefix}${ss_psl_chosen_match}"
 			ss_psl_instance_no=$((ss_psl_instance_no+1))
 		done
@@ -96,15 +100,20 @@ ${ss_psl_preprefix}${ss_psl_prefix}${ss_psl_precise_match}${ss_psl_sufix}"
 		return 1
 	fi
 	
-	echo "Line #${ss_psl_line_no} becomes:"
-	echo "${ss_psl_preprefix}${ss_psl_sufix}"
+	ss_wording_becomes="Line #${ss_psl_line_no} becomes:
+${ss_psl_preprefix}${ss_psl_sufix}"
+	ss_intro="${ss_intro}\n${ss_wording_becomes}"
+	printf "${ss_wording_becomes}\n"
+	
 	ss_msln=${ss_psl_line_no}
 	ss_msl="${ss_psl_preprefix}${ss_psl_sufix}"
 }
 
 
 proc_script() {
-	printf "\nProcessing '%s'\n" "${1}"
+	ss_wording_processing="\nProcessing '${1}'\n"
+	printf "${ss_wording_processing}"
+	ss_intro="${ss_intro}\n${ss_wording_processing}"
 	
 	opts_created_paths=${opts_created_paths:?}
 	
@@ -117,6 +126,48 @@ proc_script() {
 		# set the destination of generated script
 		if [ -z "${opts_dev_destination}" ]; then
 			ss_opts_destination="$(dirname -- "${1}")/${ss_script_name}_shlibs"
+			ss_do_clean=0
+		else
+			ss_opts_destination="${opts_dev_destination}"
+			if [ ${opts_force_cleanup} -eq 0 ]; then
+				ss_do_clean=0
+			else
+				ss_do_clean=1
+			fi
+		fi
+		#protect shlibs structure
+		ss_dest_check=0
+		ss_destination_index=0
+		while [ ${ss_dest_check} -eq 0 ]
+		do
+			if expr "${ss_opts_destination}" : "${shlibs_dirpath}.*" >/dev/null ; then
+				echo "Output to shlibs folders is forbidden!"
+				
+				case ${ss_destination_index} in
+					0)
+						echo "Saving to current working directory."
+						ss_destination_index=1
+						ss_opts_destination="${shlibs_cwd}/${ss_script_name}_shlibs"
+					;;
+					1)
+						echo "Saving to your home directory."
+						ss_destination_index=2
+						ss_opts_destination=~/"${ss_script_name}_shlibs"
+					;;
+					*)
+						s_err 'Cannot use home or current working directory.
+Try using -d to specify destination, or change current working directory.'
+						exit 1
+					;;
+				esac
+			else
+				ss_dest_check=1
+			fi
+		done
+		
+		
+		# cleanup destination
+		if [ ${ss_do_clean} -eq 0 ]; then
 			if [ -d "${ss_opts_destination}" ]; then
 				if $(./shlibs dir001 "${ss_opts_destination}") ; then :
 				else
@@ -124,11 +175,8 @@ proc_script() {
 					exit 1
 				fi
 			fi
-		else
-			ss_opts_destination="${opts_dev_destination}"
-			# the cleaning up of this type of destination is done
-			# in shlibs_options.sh if -f specified
 		fi		
+		
 		
 		# the path of the script to be handled
 		ss_target_script_path="${ss_opts_destination}/scripts/${ss_script_fullname}"
@@ -177,10 +225,11 @@ proc_script() {
 			
 				
 			
-			if [ -n "${scan_shlibs_output}" ]; then	
-				printf "Editing: %s
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n" \
-					"${ss_target_script_path}"
+			if [ -n "${scan_shlibs_output}" ]; then
+				ss_wording_editing="Editing: ${ss_target_script_path}
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+				ss_intro="${ss_intro}${ss_wording_editing}"
+				echo "${ss_wording_editing}"
 			fi
 				
 			ss_awk_repl=''
@@ -237,7 +286,8 @@ proc_script() {
 				s_err "Couldn't process correctly ${ss_target_script_path}."
 				return 1
 			fi					
-				
+			
+			printf "\nGenerating structures. Please wait ...\n"
 			
 			
 			# START OUTPUT STANDALONE FILES
@@ -365,7 +415,7 @@ sed could not process final replacements.'
 			# END OUTPUT STANDALONE FILES
 			
 			# info on completion
-			printf "\nProcessed successfully '%s'\n\n" "${1}"
+			printf "Processed successfully '%s'\n\n" "${1}"
 			
 			# include multiscript+dev dest case
 			if [ -z "${opts_dev_destination}" ] || \

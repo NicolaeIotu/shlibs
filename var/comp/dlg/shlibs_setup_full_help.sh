@@ -10,7 +10,8 @@
 
 SHLIBS_SETUP_DIALOG_FULL_HELP="\t${SHLIBS_MATCH_HIGHLIGHT} Usage ${SHLIBS_MATCH_HIGHLIGHT}
 \t  1. Searching lib:
-\t[keywords] search keywords (2 characters minimum; k+keywords = focused search)
+\t[keywords] focused search for keywords (2 characters minimum)
+\t[k+keywords] unfocused search for keywords (2 characters minimum)
 \t[c] Clear keywords
 \ti.e. 'split string', or 'k+split string'
 \tSeparate words using space ' ' to match in any order all keywords.
@@ -18,9 +19,9 @@ SHLIBS_SETUP_DIALOG_FULL_HELP="\t${SHLIBS_MATCH_HIGHLIGHT} Usage ${SHLIBS_MATCH_
 \tSuccessive search calls are treated as comma ',' separated sequences.
 \t  2. Select lib:
 \tAny libs found when using the keywords above will be displayed using 
-\t\ta numbered list.
+\ta numbered list which shows a limited amount of entries as set
+\tin shlibs_settings.sh.
 \tPick a number to select corresponding lib: 1, 2, 3 ...
-\tThe list shows a limited amount of entries as set in shlibs_settings.sh 
 \t(SHLIBS_MATCH_PAGE_SIZE and SHLIBS_MATCH_MAX).
 \tThe list can be navigated [b]ack and [f]orth.
 \t  3. In setup mode:

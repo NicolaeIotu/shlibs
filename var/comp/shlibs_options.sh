@@ -180,26 +180,6 @@ if [ -z "${opts_setup_script}" ]; then
 fi
 
 
-# we must have a valid destination (if any)
-if [ -n "${opts_dev_destination}" ]; then
-	if [ -d "${opts_dev_destination}" ]; then
-		if [ ${opts_force_cleanup} -eq 0 ]; then
-			if $( ./shlibs dir001 "${opts_dev_destination}" ) ; then :
-			else
-				s_err 'Could not force clean the destination!'
-				exit 1
-			fi
-		fi
-	else
-		if mkdir -p "${opts_dev_destination}" 2>/dev/null; then :
-		else
-			opts_error_content="Cannot create destination: \
-${opts_dev_destination}"
-		fi
-	fi
-fi
-
-
 # 2nd error handler
 if [ -n "${opts_error_content}" ]; then
 	s_err "${opts_error_content}"
@@ -221,8 +201,9 @@ fi
 . ./var/comp/shlibs_setup_script.sh
 opts_created_paths="${shlibs_session_dir}"/created_paths
 
-# setup script main info
-echo "shlibs v ${SHLIBS_VERSION}/libs ${dq_libs_version}"
+# setup script main info/info store
+ss_intro="shlibs v ${SHLIBS_VERSION}/libs ${dq_libs_version}"
+echo "${ss_intro}"
 
 IFS=${IRS}
 for opts_nrscript in ${opts_setup_script}

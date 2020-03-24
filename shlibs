@@ -78,7 +78,6 @@
 	fi
 	
 	. './var/shlibs_settings.sh'
-	. './var/comp/shlibs_settings_adjust.sh'
 	
 	. "${tcs}"
 	

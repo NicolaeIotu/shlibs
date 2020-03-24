@@ -80,8 +80,6 @@ str052() {
 		done
 		
 		stab="$(printf '%b' '\t')"
-		#echo ">>$stab<<"
-		#return
 		
 		if [ ${isfileinput} -eq 0 ]; then
 			sed "s/${stab}/${seq}/g" "${filepath}"

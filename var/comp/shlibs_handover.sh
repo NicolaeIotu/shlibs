@@ -9,6 +9,7 @@
 
 
 . './var/comp/ptbl/shlibs_err.sh'
+. './var/comp/shlibs_settings_adjust.sh'
 . './var/comp/ptbl/shlibs_utils.sh'
 . './var/comp/shlibs_dev_utils.sh'
 

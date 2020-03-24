@@ -7,11 +7,11 @@
 
 # Author Nicolae Iotu, nicolae.g.iotu@gmail.com
 
-
 trap - INT KILL TERM
 trap sdu_cleanup_tmp_onexit INT KILL TERM
 
 . ./var/comp/shlibs_sessions.sh
+. ./var/comp/shlibs_dq_output.sh
 
 # libs version
 if dq_libs_version=$(./shlibs -h ofc002) ; then
@@ -435,7 +435,7 @@ dq_process_keywords() {
 			if [ ${dq_ctrl_d} -eq 0 ]; then
 				dq_overwrite_listing=$((dq_overwrite_listing-1))
 			else
-				sdu_cut_print 'Keywords of at least 2 characters required.'
+				dq_cut_print 'At least 2 characters required.'
 				dq_overwrite_listing=$((dq_overwrite_listing+1))
 			fi
 			dq_show_basic_help=0
@@ -447,15 +447,16 @@ dq_process_keywords() {
 	fi
 }
 
-
+		
 dev_query(){
 	dq_reset 0
-	
-	if [ "${1}" = "0" ]; then
-		dq_tmp_print=$(printf "shlibs Query (v %s/libs %s)" "${SHLIBS_VERSION}" \
-			"${dq_libs_version}")
-		dq_tmp_print=$(sdu_cut_print "${dq_tmp_print}")
-		printf "${dq_tmp_print}\n\n"
+	if [ "${1}" = '0' ]; then
+		dq_intro="shlibs Query (v ${SHLIBS_VERSION}/libs ${dq_libs_version})\n"
+		printf "${dq_intro}\n"
+		dq_reset_summary_wording='Reset'
+	else
+		dq_intro="${ss_intro}"
+		dq_reset_summary_wording='Summarize'
 	fi
 	
 	while [ ${dq_on} -eq 0 ]
@@ -510,8 +511,8 @@ dev_query(){
 					dq_ctrl_d=1
 				fi
 				
-				sdu_fold "${dq_tmp_print}"
-				dq_overwrite_listing=$((dq_overwrite_listing+sdu_last_fold_count_lines))
+				dq_fold "${dq_tmp_print}"
+				dq_overwrite_listing=$((dq_overwrite_listing+dq_last_fold_count_lines))
 			else
 				dq_show_full_help=1
 				if [ -z "${SHLIBS_SETUP_DIALOG_FULL_HELP}" ]; then
@@ -519,8 +520,8 @@ dev_query(){
 				fi
 				
 				dq_tmp_print=$(printf "%b" "${SHLIBS_SETUP_DIALOG_FULL_HELP}")
-				sdu_fold "${dq_tmp_print}"
-				dq_overwrite_listing=$((dq_overwrite_listing+sdu_last_fold_count_lines))
+				dq_fold "${dq_tmp_print}"
+				dq_overwrite_listing=$((dq_overwrite_listing+dq_last_fold_count_lines))
 			fi
 		fi
 		
@@ -532,8 +533,8 @@ dev_query(){
 			dq_keywords_esc=$(echo "${dq_keywords}" | sed 's/[\]/\\/g')
 			
 			dq_tmp_print=$(printf "\tSearch started: %s\n" "${dq_keywords_esc}")
-			sdu_fold "${dq_tmp_print}"
-			dq_overwrite_search_start_lines="${sdu_last_fold_count_lines}"
+			dq_fold "${dq_tmp_print}"
+			dq_overwrite_search_start_lines="${dq_last_fold_count_lines}"
 			
 			# simulate the search if duplicate dq_ui
 			if [ ${dq_ui_duplicate} -eq 1 ]; then
@@ -555,8 +556,8 @@ dev_query(){
 			else
 				dq_tmp_print=$(printf "\tFound 0 / %s lib(s).\n\t[%s]\n" \
 					"${sk_search_count}" "change keywords, request lib: ${SHLIBS_REQUESTS}")
-				sdu_fold "${dq_tmp_print}"
-				dq_overwrite_found=${sdu_last_fold_count_lines}
+				dq_fold "${dq_tmp_print}"
+				dq_overwrite_found=${dq_last_fold_count_lines}
 				dq_overwrite_listing=0
 			fi
 		fi
@@ -574,8 +575,8 @@ dev_query(){
 				if dq_tmp_print=$(ss_retrieve \
 					"${dq_page_start_index},${dq_page_end_index}" \
 					'search_results') ; then
-					sdu_fold "${dq_tmp_print}"
-					dq_page_list_diff_count_lines=$((sdu_last_fold_count_lines-\
+					dq_fold "${dq_tmp_print}"
+					dq_page_list_diff_count_lines=$((dq_last_fold_count_lines-\
 						dq_page_end_index+dq_page_start_index-1))
 				else
 					s_err 'Session info unavailable.'
@@ -586,8 +587,8 @@ dev_query(){
 			if [ ${dq_oob_nav} -eq 1 ]; then
 				dq_tmp_print=$(printf "\tFound %s / %s lib(s).\n" \
 					"${dq_search_result_count}" "${sk_search_count}")
-				sdu_fold "${dq_tmp_print}"
-				dq_overwrite_found=${sdu_last_fold_count_lines}
+				dq_fold "${dq_tmp_print}"
+				dq_overwrite_found=${dq_last_fold_count_lines}
 			else
 				dq_oob_nav=1
 			fi		
@@ -597,13 +598,13 @@ dev_query(){
 		fi		
 
 		# show options
-		dq_options=""
+		dq_options=''
 		if [ "${SHLIBS_SHOW_OPTIONS}" = '0' ]; then
 			if [ ${dq_search_result_count} -gt 0 ]; then
 				dq_count_wording="\n\t[f] nav Fwd, [b] nav Back, [h+#] lib Help, \
 [x+#] lib eXamples"
 				if [ "${1}" != '0' ]; then
-					dq_skip_wording=', [s] Skip instance, [l] skip Line'
+					dq_skip_wording='\n\t[s] Skip instance, [l] skip Line'
 					dq_block_wording='\n\t[p+#] get lib path'
 				fi
 			else
@@ -611,7 +612,9 @@ dev_query(){
 				dq_skip_wording=''
 				dq_block_wording=''
 			fi
-			dq_options="\t[c] Clear keywords${dq_skip_wording}, [h] Help\
+			
+			dq_options="\t[c] clear keywords, [C] Clear & ${dq_reset_summary_wording}, [h] Help, [x] Examples\
+${dq_skip_wording}\
 ${dq_count_wording}${dq_block_wording}\n"			
 		fi
 
@@ -625,17 +628,17 @@ ${dq_count_wording}${dq_block_wording}\n"
 				fi
 				
 				dq_tmp_print="--- Help: ${dq_heex_lib_code}"
-				sdu_fold "${dq_tmp_print}"
-				dq_overwrite_he_ex=${sdu_last_fold_count_lines}
+				dq_fold "${dq_tmp_print}"
+				dq_overwrite_he_ex=${dq_last_fold_count_lines}
 				if [ -r "${shlibs_session_dir}/dq_libhelp" ]; then
 					dq_tmp_print=$(cat "${shlibs_session_dir}/dq_libhelp")
-					sdu_fold "${dq_tmp_print}"
-					dq_overwrite_he_ex=$((dq_overwrite_he_ex+sdu_last_fold_count_lines))
+					dq_fold "${dq_tmp_print}"
+					dq_overwrite_he_ex=$((dq_overwrite_he_ex+dq_last_fold_count_lines))
 				else
-					sdu_fold 'No help available!'
-					dq_overwrite_he_ex=$((dq_overwrite_he_ex+sdu_last_fold_count_lines))
+					dq_fold 'No help available!'
+					dq_overwrite_he_ex=$((dq_overwrite_he_ex+dq_last_fold_count_lines))
 				fi
-				sdu_cut_print '-----------------------------------------------------------------------'
+				dq_cut_print '-----------------------------------------------------------------------'
 				dq_overwrite_he_ex=$((dq_overwrite_he_ex+1))
 			elif [ ${dq_lib_examples} -eq 0 ]; then
 				if dq_heex_lib_code=$(ss_retrieve "${dq_ui}" \
@@ -646,17 +649,17 @@ ${dq_count_wording}${dq_block_wording}\n"
 				fi
 				
 				dq_tmp_print="--- Examples: ${dq_heex_lib_code}"
-				sdu_fold "${dq_tmp_print}"
-				dq_overwrite_he_ex=${sdu_last_fold_count_lines}
+				dq_fold "${dq_tmp_print}"
+				dq_overwrite_he_ex=${dq_last_fold_count_lines}
 				if [ -r "${shlibs_session_dir}/dq_libexamples" ]; then					
 					dq_tmp_print=$(cat "${shlibs_session_dir}/dq_libexamples")
-					sdu_fold "${dq_tmp_print}"
-					dq_overwrite_he_ex=$((dq_overwrite_he_ex+sdu_last_fold_count_lines))
+					dq_fold "${dq_tmp_print}"
+					dq_overwrite_he_ex=$((dq_overwrite_he_ex+dq_last_fold_count_lines))
 				else
-					sdu_fold 'No examples available!'
-					dq_overwrite_he_ex=$((dq_overwrite_he_ex+sdu_last_fold_count_lines))
+					dq_fold 'No examples available!'
+					dq_overwrite_he_ex=$((dq_overwrite_he_ex+dq_last_fold_count_lines))
 				fi
-				sdu_cut_print '-----------------------------------------------------------------------'
+				dq_cut_print '-----------------------------------------------------------------------'
 				dq_overwrite_he_ex=$((dq_overwrite_he_ex+1))
 			else
 				dq_overwrite_he_ex=0
@@ -668,8 +671,8 @@ ${dq_count_wording}${dq_block_wording}\n"
 		dq_lib_examples=1
 
 		dq_tmp_print=$(printf "%b\tKeywords { %s }\n" "${dq_options}" "${dq_keywords_esc}")
-		sdu_fold "${dq_tmp_print}"
-		dq_overwrite_prompt=$((sdu_last_fold_count_lines+1))
+		dq_fold "${dq_tmp_print}"
+		dq_overwrite_prompt=$((dq_last_fold_count_lines+1))
 		printf "%b" "\tInput: "
 		
 		
@@ -712,9 +715,17 @@ ${dq_count_wording}${dq_block_wording}\n"
 					dq_process_keywords
 				fi
 				;;
-			c|C)
+			c)
 				# clear keywords
 				dq_reset
+				;;
+			C)
+				# clear and reset
+				tput clear
+				ssa_run_adjustment
+				printf "${dq_intro}\n"
+				dq_reset 0
+				#return ${?}
 				;;
 			s|S)
 				if [ "${1}" = "0" ]; then
@@ -765,12 +776,15 @@ ${dq_count_wording}${dq_block_wording}\n"
 				# i.e. 5+-xd 32
 				dq_target_lib_options=''
 				if [ "${1}" != '0' ]; then
-					dq_target_lib_options=" ${dq_ui#*+}"
+					dq_target_lib_options=" ${dq_ui#*+}"					
 					if [ "${dq_target_lib_options}" != " ${dq_ui}" ] ; then
 						dq_ui=${dq_ui%%+*}
 						if [ -n "${ss_psl_chosen_get_script_path}" ] ; then
 							dq_target_lib_options=''
 						fi
+						# important
+						dq_target_lib_options=$(echo "${dq_target_lib_options}" \
+							| sed 's/"/\\\"/g')
 					else
 						dq_target_lib_options=''
 					fi
@@ -883,7 +897,7 @@ ${dq_count_wording}${dq_block_wording}\n"
 								"${dq_p_wording}" "${dq_v_wording}" "${dq_quoted_target_libcode}" \
 								"${dq_v_wording}" "${dq_quoted_target_libcode}" \
 								"${dq_v_wording}" "${dq_quoted_target_libcode}")
-							sdu_fold "${dq_tmp_print}"
+							dq_fold "${dq_tmp_print}"
 						fi
 						
 						

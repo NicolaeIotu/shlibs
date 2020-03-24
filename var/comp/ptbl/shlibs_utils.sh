@@ -16,11 +16,15 @@ esc_shlibs_dirpath=$(echo "${shlibs_dirpath:?}" | sed 's/\//\\\\\//g')
 nl=$(printf '%b' '\n\r')
 export nl
 
+# record separator
+IRS=$(printf '\036')
+export IRS
+
 # shlibs version
-SHLIBS_VERSION=1.0.0
+SHLIBS_VERSION=1.1.16
 export SHLIBS_VERSION
 # shlibs release
-SHLIBS_RELEASE=1
+SHLIBS_RELEASE=2
 export SHLIBS_RELEASE
 
 # the email for requests

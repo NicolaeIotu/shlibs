@@ -7,7 +7,6 @@
 
 # Author Nicolae Iotu, nicolae.g.iotu@gmail.com
 
-
 SHLIBS_EXAMPLES="SHLIBS Examples
 
 > shlibs   [ query shlibs for the code of a library/utility ]
@@ -17,5 +16,7 @@ SHLIBS_EXAMPLES="SHLIBS Examples
 > shlibs -y -s /path/to/script
       [ process script and run a realistic test ]
 > shlibs -s /path/to/script -d /destination/folder
-      [ process script and output to destination folder ]\n\n"
+      [ process script and output to destination folder ]
+      
+Visit https://shlibs.org, https://shlibs.net for more instructions.\n\n"
 export SHLIBS_EXAMPLES
