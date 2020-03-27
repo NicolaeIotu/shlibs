@@ -187,7 +187,7 @@ str035_help() {
 	echo 'Parameters:'
 	echo ' - subject string, or "-f /path/to/text/file" to process file content'
 	echo ' - needle, search substring'
-	echo ' - sequencial number of the occurence (1 based, pozitive)'
+	echo ' - sequential number of the occurrence (1 based, positive)'
 	echo ' - case insensitive search flag "-i" (optional)'
 }
 

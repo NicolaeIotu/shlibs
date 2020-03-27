@@ -4,4 +4,7 @@
 .project
 .attach*
 
+### others ###
+*.bak
+/libs/dev/*
 

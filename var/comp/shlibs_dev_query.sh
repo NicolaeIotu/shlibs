@@ -173,6 +173,8 @@ dq_file_on_trav_dir() {
 				
 			if [ "${sk_section}" = 'official' ]; then
 				otd_dest_src_raw="${otd_dest_src_raw}/${otd_lib_code}.sh"
+			else
+				otd_dest_src_raw="${sk_section}${otd_dest_src_raw}/${otd_lib_code}.sh"
 			fi
 		else
 			otd_dest_src_raw="${otd_lib_dir#${shlibs_dirpath}/libs/}"
@@ -229,14 +231,22 @@ dq_file_on_trav_dir() {
 				exit 1
 			fi
 		else
-			if {
-				dq_tmp_ops=$(printf "[%s] %s/%s%s\n" "${dq_search_result_count}" \
-					"${otd_dest_src_raw}" "${otd_lib_code}" \
-					"${sk_info}")
-				ss_store "${dq_tmp_ops}" 'search_results' ;
-				
-				dq_tmp_ops=$(printf "%s/%s\n" \
-					"${otd_lib_dir_libs_relative}" "${otd_lib_code}") ;
+			if {				
+				if [ ${sk_optimized} -eq 0 ]; then
+					dq_tmp_ops=$(printf "[%s] %s\n" "${dq_search_result_count}" \
+						"${otd_dest_src_raw}" ) ;
+					ss_store "${dq_tmp_ops}" 'search_results' ;
+					
+					dq_tmp_ops=$(printf "%s\n" "${otd_dest_src_raw}" ) ;
+				else
+					dq_tmp_ops=$(printf "[%s] %s/%s%s\n" "${dq_search_result_count}" \
+						"${otd_dest_src_raw}" "${otd_lib_code}" \
+						"${sk_info}") ;
+					ss_store "${dq_tmp_ops}" 'search_results' ;
+					
+					dq_tmp_ops=$(printf "%s/%s\n" \
+						"${otd_lib_dir_libs_relative}" "${otd_lib_code}") ;
+				fi
 				ss_store "${dq_tmp_ops}" 'search_results_target_lib_code' ;
 				} ; then :
 			else

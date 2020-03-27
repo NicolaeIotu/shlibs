@@ -86,8 +86,8 @@ str042_help() {
 	echo 'Return lines in interval start-end of string/file.'
 	echo 'Parameters:'
 	echo ' - subject string, or "-f /path/to/text/file" to process file content'
-	echo ' - start line number (included in ouput)'
-	echo ' - end line number (included in ouput)'
+	echo ' - start line number (included in output)'
+	echo ' - end line number (included in output)'
 }
 
 str042_examples() {

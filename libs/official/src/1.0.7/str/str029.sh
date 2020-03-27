@@ -141,7 +141,7 @@ str029_help() {
 	echo ' - use "-space" to delete whitespace characters (-kspace to keep them)'
 	echo ' - use "-upper" to delete uppercase characters (-kupper to keep them)'
 	echo ' - use "-xdigit" to delete hexadecimal notation chars (-kxdigit to keep them)'
-	echo ' - use "--chars_to_del" to delete chars ("--kchars_to_del" to keem them)'
+	echo ' - use "--chars_to_del" to delete chars ("--kchars_to_del" to keep them)'
 }
 
 str029_examples() {

@@ -96,7 +96,7 @@ str067_tests() {
 	tests__='
 shlibs str067 "$(shlibs tst002)"
 =======
-21.2353
+21.1176
 
 
 shlibs str067 -f "$(shlibs -p tst005)" -skipempty

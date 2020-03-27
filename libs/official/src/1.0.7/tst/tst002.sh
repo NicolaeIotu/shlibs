@@ -19,8 +19,8 @@ Punctuation chars: .,;^
 Numbers are present as well: 1967452186456
 			
 Multiple tabs above
-UPPERCASE TEXT MAY BE USEFULL WHEN TESTING
-Titlecase Could Be Usefull As Well
+UPPERCASE TEXT MAY BE USEFUL WHEN TESTING
+Titlecase Could Be Useful As Well
 
 
 Special control chars right here: \177 \017 \022
@@ -48,8 +48,8 @@ tst002_examples() {
 	echo 'Numbers are present as well: 1967452186456'
 	echo '			'
 	echo 'Multiple tabs above'
-	echo 'UPPERCASE TEXT MAY BE USEFULL WHEN TESTING'
-	echo 'Titlecase Could Be Usefull As Well'
+	echo 'UPPERCASE TEXT MAY BE USEFUL WHEN TESTING'
+	echo 'Titlecase Could Be Useful As Well'
 	echo ''
 	echo ''
 	echo 'Special control chars right here:   '

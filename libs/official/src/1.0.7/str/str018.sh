@@ -132,7 +132,7 @@ str018_help() {
 	echo 'Parameters:'
 	echo ' - subject string, or "-f /path/to/text/file" to process file content'
 	echo ' - start index (1 based, included, can be negative)'
-	echo ' - length (optional, integer, 1 based, included, pozitive)'
+	echo ' - length (optional, integer, 1 based, included, positive)'
 }
 
 str018_examples() {

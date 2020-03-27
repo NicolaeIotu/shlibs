@@ -13,12 +13,12 @@ ofc003_changelog_header='
 ************************************'
 ofc003_changelog_template='
 +----------------------------------+
-|   shlibs v%s / libs v%s    |
+    shlibs v%s / libs v%s
 +----------------------------------+
-%s'
+%b'
 
 ofc003_rls_2=$( printf "${ofc003_changelog_template}" '1.1.16' '1.0.7' \
-">>> shlibs Application
+">>> shlibs Application 1.1.16
 - significant improvement: introduced option 'C' which clears (query) or \
 clears and summarizes (setup script) output of terminal. Use 'C' whenever \
 the output is messy due to any factors including manual or programmatic \
@@ -26,28 +26,28 @@ resize of display device/terminal; updates to structure and code to allow option
 - significant improvement: when processing script, instances of shlibs and \
 their replacements are additionally highlighted with bold red
 - added protection of shlibs internal structure when processing scripts
-- corrected an error occuring when choosing library in script setup mode \
-and causing double quoted params to be ommited from generated script \
+- corrected an error occurring when choosing library in script setup mode \
+and causing double quoted params to be omitted from generated script \
 (i.e. 3+\"DQuoted text went missing\" 44 other_params)
 - improved/updated help and examples texts
 - prevented shlibs from being piped to others in query and script setup modes
 - corrected error not showing help and examples of libs when using versions
 - removed minimum number of libs in query mode
 - corrected the naming of some vars to be meaningful for the values they store
-- corrected wording error occuring in query mode when multiple versions of \
+- corrected wording error occurring in query mode when multiple versions of \
 libs are in use and selection is complete
 - minor format improvements
-- format corrections to allow visualisation of libs/dev and lib/community
+- format corrections to allow visualization of libs/dev and lib/community
 - minor format correction to README.md
 - deleted erroneous file
 - created CODE_OF_CONDUCT.md, REQUESTS.md, TODO.md
 - update issue templates
 \n
->>> shlibs Official Libraries
+>>> shlibs Official Libraries 1.0.7
 - trm001 - new addition: Get cursor position in terminal (u.o.m. characters)
 - tst001 - upgrade to release 2: improved handling when testing versions of \
 libraries
-- str029 - upgrade to release 2: prevented an error occuring when using multiple \
+- str029 - upgrade to release 2: prevented an error occurring when using multiple \
 classes which include space or blank classes
 - str031 - upgrade to release 2: corrected an error causing the last character \
 to remain unshuffled

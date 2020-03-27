@@ -175,7 +175,7 @@ str066_help() {
 	echo ' - first string, or "-f /path/to/text/file" to process file content'
 	echo ' - second string, or "-f /path/to/text/file" to process file content'
 	echo ' - region start index (1 based, included, can be negative)'
-	echo ' - region length (pozitive integer)'
+	echo ' - region length (positive integer)'
 	echo '   (start/length should be specified in order above unless logical cases)'
 }
 
@@ -184,7 +184,7 @@ str066_examples() {
 	echo 'teststring2="A test string used to test shlibs str066"'
 	echo 'shlibs str066 "${teststring1}" "${teststring2}" 1 13'
 	echo 'echo ${?}'
-	echo 'Result: 0 (Successfull match)'
+	echo 'Result: 0 (Successful match)'
 }
 
 str066_tests() {
