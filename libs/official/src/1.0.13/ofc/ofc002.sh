@@ -8,13 +8,13 @@
 # Author Nicolae Iotu, nicolae.g.iotu@gmail.com
 
 ofc002() {
-	echo '2'
+	echo '3'
 }
 
 ofc002_help() {
-	echo '1.0.7'
+	echo '1.0.13'
 }
 
 ofc002_examples() {
-	echo '1.0.7'
+	echo '1.0.13'
 }

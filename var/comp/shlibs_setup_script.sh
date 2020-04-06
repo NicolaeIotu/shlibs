@@ -10,15 +10,13 @@
 . ./var/comp/shlibs_dev_query.sh
 
 _s_='[^a-zA-Z0-9_]'
+# identifies replaceable shlibs instances
 ss_psl_shlibs_ere="${_s_}shlibs${_s_}|^shlibs${_s_}|^shlibs$|${_s_}shlibs$"
 
 proc_shlibs_line(){	
 	# get line number and line content
 	ss_psl_line_no="${1%:*}"
 	ss_psl_line_content="${1#${ss_psl_line_no}:}"
-	
-	# precisely identify shlibs fragment
-	ss_psl_shlibs_ere="${_s_}shlibs${_s_}|^shlibs${_s_}|^shlibs$|${_s_}shlibs$"
 	
 	# $ss_psl_line_content can have multiple instances of shlibs
 	ss_psl_shlibs_count=$(echo "${ss_psl_line_content}" | \
@@ -68,7 +66,7 @@ proc_shlibs_line(){
 			ss_wording_line="- line ${ss_psl_line_no}/instance ${ss_psl_instance_no}: \
 ${ss_psl_preprefix}${ss_psl_prefix}${ss_psl_precise_match}${ss_psl_sufix}"
 			ss_intro="${ss_intro}${nl}${ss_wording_line}"
-			printf '%s\n' "${ss_wording_line}"
+			printf -- "${ss_wording_line}\n"
 			
 			if dev_query 1 ; then	
 				if [ -n "${ss_psl_chosen_lib}" ]; then
@@ -90,7 +88,8 @@ ${ss_psl_preprefix}${ss_psl_prefix}${ss_psl_precise_match}${ss_psl_sufix}"
 			
 			ss_psl_wlc="${ss_psl_sufix}"
 			ss_psl_chosen_match="$( echo "${ss_psl_chosen_match}" | \
-				sed 's/shlibs/\\033\[1;31mshlibs\\033\[m/' )"
+				sed 's/shlibs/\\033\[1;31mshlibs/' )"
+			ss_psl_chosen_match="${ss_psl_chosen_match}"'\033[m'
 			ss_psl_preprefix="${ss_psl_preprefix}${ss_psl_prefix}${ss_psl_chosen_match}"
 			ss_psl_instance_no=$((ss_psl_instance_no+1))
 		done
@@ -175,7 +174,7 @@ Try using -d to specify destination, or change current working directory.'
 					exit 1
 				fi
 			fi
-		fi		
+		fi
 		
 		
 		# the path of the script to be handled

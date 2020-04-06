@@ -161,7 +161,9 @@ tst001_test_lib() {
 						sed 's/shlibs /shlibs '"${2}"' /g' | \
 						sed 's/shlibs /'"${shlibs_path_esc}"' /g' )"
 					
-					int_tr="$( eval "${test_seq}" )"
+					# important: syntax allows using -- in tests without 
+					# triggering errors on some eval implementations
+					int_tr="$( eval " ${test_seq}" )" 2>/dev/null
 					if [ -n "${int_tr}" ]; then
 						if [ -n "${test_result}" ]; then
 #important

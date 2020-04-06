@@ -7,26 +7,17 @@
 
 # Author Nicolae Iotu, nicolae.g.iotu@gmail.com
 
-str058() {
+str050() {
 	if [ ${#} -gt 0 ]; then
 		isfileinput=1
 		filepath=''
 		str=''
 		bw='-s'
 		size=0
-		indent=4
 		
 		while [ ${#} -gt 0 ]
 		do
 			case ${1} in
-				-indent)
-					test ${2} -gt 0 2>/dev/null || {
-						printf "${S_ERR_1}" "${rl_dev_code}"
-						exit 1
-					}
-					indent=${2}
-					shift 2
-					;;
 				-b)
 					bw=''
 					shift
@@ -70,11 +61,6 @@ str058() {
 		done
 		
 		
-		if [ ${size} -gt 0 ]; then
-			if [ ${indent} -ge ${size} ]; then
-				indent=$((size-2)) #2 experimental
-			fi
-		fi			
 		if [ ${isfileinput} -eq 0 ]; then
 			if [ -n "${str}" ]; then
 				printf "${S_ERR_1}" "${rl_dev_code}"
@@ -118,22 +104,6 @@ str058() {
 					len+=length($i)
 				}
 				tsize=size-len
-				
-				bg_index=index($0,$1)
-				if(index($0,ENVIRON["indent_apnd"])==1) {
-					res=ENVIRON["indent_apnd"]
-					if(bg_index!=ENVIRON["indent"]+1) {
-						res=res substr($0,ENVIRON["indent"],bg_index-ENVIRON["indent"])
-					}
-					res=res $1
-					tsize-=ENVIRON["indent"]
-				} else {
-					if(bg_index!=1) {
-						res=substr($0,1,bg_index)
-					}
-					res=res $1
-				}
-				
 				base_size=int(tsize/(NF-1))
 				extra_size_count=tsize-(base_size*(NF-1))
 				i=base_size
@@ -142,7 +112,11 @@ str058() {
 					apnd=apnd " "
 					i-=1
 				}
-				
+				bg_index=index($0,$1)
+				if(bg_index!=1) {
+					res=substr($0,1,bg_index-1)
+				}
+				res=res $1
 				for(i=2; i<=NF; i++) {
 					if(i>extra_size_count+1) {
 						res=res apnd $i
@@ -153,46 +127,26 @@ str058() {
 				print res
 			} else print $0
 		}'
-
-
-		if [ ${isfileinput} -eq 0 ]; then
+		
+		if [ ${isfileinput} -eq 0 ]; then			
 			if [ ${size} -gt 0 ]; then
-				str058_update_indent
-				sed "{
-					s/^/${indent_apnd}/
-					s/$/${IRS}/
-				}" "${filepath}" | fold -b ${bw} -w ${size} | \
+				sed "s/$/${IRS}/" "${filepath}" | fold -b ${bw} -w $((size+1)) | \
 					${SHLIBS_AWK} -v size="${size}" "${awk_script__}"
 			else
-				indented_file_content=$(sed " s/^/${indent_apnd}/; s/$/${IRS}/ " "${filepath}")
-				
+				indented_file_content=$(sed "s/$/${IRS}/" "${filepath}")
 				size=$(echo "${indented_file_content}" | ${SHLIBS_AWK} "${awk_script__ml}")
-				if [ ${indent} -ge ${size} ]; then
-					indent=$((size-1))
-				fi
-				str058_update_indent
-				# if requested perform fold using size minus indent (?!~)
 				echo "${indented_file_content}" | \
 					${SHLIBS_AWK} -v size="${size}" "${awk_script__}"
 			fi
 		else
 			if [ ${size} -gt 0 ]; then
-				str058_update_indent
-				echo "${str}" | sed "{
-					s/^/${indent_apnd}/
-					s/$/${IRS}/
-				}" | fold -b ${bw} -w ${size} | \
+				echo "${str}" | sed "s/$/${IRS}/" | fold -b ${bw} -w $((size+1)) | \
 					${SHLIBS_AWK} -v size="${size}" "${awk_script__}"
 			else
-				indented_str_content=$(echo "${str}" | sed " s/^/${indent_apnd}/; s/$/${IRS}/ ")
+				indented_str_content=$(echo "${str}" | sed "s/$/${IRS}/")
 				size=$(echo "${indented_str_content}" | ${SHLIBS_AWK} "${awk_script__ml}")
-				if [ ${indent} -ge ${size} ]; then
-					indent=$((size-1))
-				fi
-				str058_update_indent
-				# if requested perform fold using size minus indent (?!~)
-				echo "${indented_str_content}" | ${SHLIBS_AWK} \
-					-v size="${size}" "${awk_script__}"
+				echo "${indented_str_content}" | \
+					${SHLIBS_AWK} -v size="${size}" "${awk_script__}"
 			fi
 		fi
 	else
@@ -201,52 +155,36 @@ str058() {
 	fi
 }
 
-str058_update_indent() {
-	indent_apnd=''
-	j=${indent}
-	while [ ${j} -gt 0 ]
-	do
-		indent_apnd="${indent_apnd} "
-		j=$((j-1))
-	done
-	export indent
-	export indent_apnd
-}
-
-str058_help() {
-	echo 'Paragraph format string/file (+-wrap to size and break words).'
+str050_help() {
+	echo 'Justify format string/file (+-wrap to size and break words).'
 	echo 'Parameters:'
 	echo ' - subject string, or "-f /path/to/text/file" to process file content'
 	echo ' - wrap size (optional)'
 	echo ' - use -b to break words (optional, works when wrap size specified)'
-	echo ' - use "-indent n" to add n spaces at the beginning of first line'
-	echo '   (optional, defaults to 4)'
 }
 
-str058_examples() {
-	echo 'shlibs str058 "A string used to test paragraph format text using str058" 21'
+str050_examples() {
+	echo 'shlibs str050 "A string used to test wrap and justify text using str050" 21'
 	echo 'Result: '
-	echo '    A  string used to'
-	echo 'test        paragraph'
-	echo 'format   text   using'
-	echo 'str058'
+	echo 'A string used to test'
+	echo 'wrap and justify text'
+	echo 'using str050'
 }
 
-str058_tests() {
+str050_tests() {
 	tests__='
-shlibs str058 "A string used to test paragraph format text using str058" 21
+shlibs str050 "A string used to test wrap and justify text using str050" 21
 =======
-    A  string used to
-test        paragraph
-format   text   using
-str058
+A string used to test
+wrap and justify text
+using str050
 
 
-shlibs str058 -f "$(shlibs -p tst004)" 24 | head -n 3
+shlibs str050 -f "$(shlibs -p tst004)" 30 | head -n 3
 =======
-    Lorem   ipsum  dolor
-sit  amet,  consectetuer
-adipiscing   elit.  Nunc
+Lorem  ipsum  dolor  sit amet,
+consectetuer  adipiscing elit.
+Nunc  congue  ipsum vestibulum
 '
 	echo "${tests__}"
 }

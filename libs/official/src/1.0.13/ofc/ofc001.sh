@@ -11,13 +11,13 @@ ofc001() {
 	# this value is for external use
 	# the value used inside app is set/used in shlibs_utils.sh, SHLIBS_VERSION
 	# update both if required
-	echo '2'
+	echo '3'
 }
 
 ofc001_help() {
-	echo '1.1.16'
+	echo '1.2.21'
 }
 
 ofc001_examples() {
-	echo '1.1.16'
+	echo '1.2.21'
 }

@@ -25,7 +25,7 @@ else
 fi	
 
 if [ ${shlibs_redirect} -eq 0 ]; then
-	shlibs_fb=`dd bs=1 count=1 2>/dev/null | od -t o1 -A n | tr -dc '[0-9]'`
+	shlibs_fb=`dd bs=1 count=1 2>/dev/null | od -t o1 -A n | tr -dc '0123456789'`
 fi
 
 if [ -n "${shlibs_fb}" ]; then

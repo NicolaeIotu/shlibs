@@ -4,7 +4,12 @@
 .project
 .attach*
 
+# shlibs specific
+/libs/dev/*
+/var/log/*
+/var/tmp/*
+
 ### others ###
 *.bak
-/libs/dev/*
+
 

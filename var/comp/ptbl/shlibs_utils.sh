@@ -21,10 +21,10 @@ IRS=$(printf '\036')
 export IRS
 
 # shlibs version
-SHLIBS_VERSION=1.1.16
+SHLIBS_VERSION=1.2.20
 export SHLIBS_VERSION
 # shlibs release
-SHLIBS_RELEASE=2
+SHLIBS_RELEASE=3
 export SHLIBS_RELEASE
 
 # the email for requests

@@ -7,8 +7,8 @@
 
 # Author Nicolae Iotu, nicolae.g.iotu@gmail.com
 
-trap - INT KILL TERM
-trap sdu_cleanup_tmp_onexit INT KILL TERM
+trap - INT KILL TERM 2>/dev/null
+trap sdu_cleanup_tmp_onexit INT KILL TERM 2>/dev/null
 
 . ./var/comp/shlibs_sessions.sh
 . ./var/comp/shlibs_dq_output.sh
@@ -70,9 +70,31 @@ dq_get_version() {
 }
 
 
+dq_file_on_trav_dir_lookup() {
+	# $1 - file
+	# $2 - search sequence
+	if [ ${#2} -ge 2 ]; then
+		if ${SHLIBS_GREP} "${dq_k_search_grep_opts_i_F}" \
+			"${2}" "${1}" >/dev/null 2>&1 ; then
+			# no duplicate codes allowed for optimized
+			if [ ${sk_optimized} -eq 0 ]; then
+				dq_opti_hdr_for_code=$(find -L "${otd_lib_dir}" \
+					-name "${otd_lib_code}" -type f)
+				dq_opti_hdr_for_code_count=$(echo \
+					"${dq_opti_hdr_for_code}" | wc -l | xargs echo)
+				dq_get_version
+			fi
+		else
+			otd_match=0
+			return 1
+		fi
+	fi
+}
+
+
 dq_fs_mem_err='Could not process search results due to fs/mem issues.'
 dq_file_on_trav_dir() {
-	otd_all='' otd_any=''
+	otd_all='' otd_any='' otd_quoted=''
 	otd_any_count=0
 	
 	otd_lib_code="${1##*/}"
@@ -82,39 +104,31 @@ dq_file_on_trav_dir() {
 	dq_mvers=0 dq_ivers=0
 	dq_opti_hdr_for_code='' dq_opti_hdr_for_code_count=0
 	
-	# determine if keywords are present
-	# split by commas first
-	IFS=','
-	for otd_any in ${dq_keywords_esc}
+	# split by the real number of user entries
+	IFS=${IRS}
+	for otd_any in ${dq_ksfve}
 	do
 		otd_match=1
-		
-		# minimum 2 chars
-		if [ ${#otd_any} -ge 2 ]; then
+		# look for "..." sequence
+		# important: nullify errors of all expr quote checks
+		if otd_quoted=$( expr "${otd_any}" : '"\([^"]*\)"$' 2>/dev/null) && \
+			[ ${#otd_quoted} -ge 2 ]; then
+			dq_file_on_trav_dir_lookup "${1}" "${otd_quoted}"
+		elif [ ${#otd_any} -ge 2 ]; then
+			# minimum 2 chars
 			IFS=' '
 			for otd_all in ${otd_any}
 			do
-				if [ ${#otd_all} -ge 2 ]; then
-					if ${SHLIBS_GREP} "${dq_k_search_grep_opts_i_F}" \
-						"${otd_all}" "${1}" >/dev/null 2>&1 ; then
-						# no duplicate codes allowed for optimized
-						if [ ${sk_optimized} -eq 0 ]; then
-							dq_opti_hdr_for_code=$(find -L "${otd_lib_dir}" \
-								-name "${otd_lib_code}" -type f)
-							dq_opti_hdr_for_code_count=$(echo \
-								"${dq_opti_hdr_for_code}" | wc -l | xargs echo)
-							dq_get_version
-						fi
-					else
-						otd_match=0
-						break
-					fi				
+				if dq_file_on_trav_dir_lookup "${1}" "${otd_all}" ; then :
+				else
+					break
 				fi
 			done
-			
-			if [ ${otd_match} -eq 1 ]; then
-				otd_any_count=$((otd_any_count+1))
-			fi
+			IFS=${IRS}
+		fi
+		
+		if [ ${otd_match} -eq 1 ]; then
+			otd_any_count=$((otd_any_count+1))
 		fi
 	done
 	IFS=${o_ifs}
@@ -140,7 +154,7 @@ dq_file_on_trav_dir() {
 				
 			if [ -r "${dq_opti_paths_for_code}" ]; then :
 			else
-				s_err "Cannot read src of \
+				s_err "Cannot read source of \
 '${dq_opti_paths_for_code:-${dq_opti_hdr_for_code}}'."
 				exit 1
 			fi
@@ -357,6 +371,8 @@ dq_search_keywords() {
 
 dq_reset() {
 	dq_keywords='' dq_keywords_esc='' dq_libcode='' dq_target_libcode=''
+	#dq_keywords_search_formatted_esc
+	dq_ksfve=''
 	dq_on=0 dq_search_on=1 dq_navigate=1 dq_oob_nav=1
 	dq_search_result_count=0 dq_rc=0 dq_ui='' dq_k_search=1
 	dq_page=1 dq_max_page=1 dq_lib_help=1 dq_lib_examples=1
@@ -388,8 +404,59 @@ dq_reset() {
 }
 
 
+dq_upd_search_formatted_var() {
+	# search format the user input
+	dq_usfv_tmp=$( echo "${dq_ui}" | ${SHLIBS_AWK} \
+		-F "," -v IRS="${IRS}" \
+		'BEGIN { harr_len=split("",harr) }
+		{
+			remng=$0
+			# get quoted content
+			i=harr_len+1
+			do {
+				match(remng, /"[^"]*"/)
+				if(RSTART > 0) {
+					harr[i]=substr(remng, RSTART, RLENGTH)
+					remng=substr(remng,1,RSTART-1) substr(remng,RSTART+RLENGTH)
+					i++
+				}
+			} while(RSTART > 0)
+			
+			# get comma separated values
+			cvarr_len=split(remng, cvarr, ",")
+			for(j=1; j<cvarr_len+1; j++) {
+				harr[i]=cvarr[j]
+				i++
+			}
+			
+			# prepare for eventual future developments
+			# for now just a record expected
+			harr_len=i-1
+		}
+		END { 
+			# assemble and compact
+			res=""
+			for(i=1; i<harr_len+1; i++) {
+				if(res!="") {
+					res=res""IRS
+				}
+				res=res harr[i]
+			}
+			print res
+		}' | sed 's/[\]/\\/g' )
+	
+	if [ -n "${dq_ksfve}" ]; then
+		dq_ksfve="${dq_ksfve}${IRS}${dq_usfv_tmp}"
+	else
+		dq_ksfve="${dq_usfv_tmp}"
+	fi
+}	
+
+
 dq_process_keywords() {
-	if [ ${#dq_ui} -lt 2 ]; then
+	# important: nullify errors of expr 
+	if [ ${#dq_ui} -lt 2 ] || \
+		( expr "${dq_ui}" : '".\{0,1\}"$' >/dev/null 2>&1 ) ; then 
 		dq_show_basic_help=0
 		return
 	fi
@@ -425,7 +492,7 @@ dq_process_keywords() {
 	fi
 	
 	# handle duplicates
-	# 'k+term' and 'term' are duplicates!
+	# 'k+term' and 'term' are duplicates! quoted term is not a duplicate for now
 	dq_ui_duplicate=1
 	IFS=','
 	for ex_kywrd in ${dq_keywords}
@@ -440,6 +507,7 @@ dq_process_keywords() {
 	if [ ${dq_ui_duplicate} -eq 1 ]; then		
 		if [ ${#dq_ui} -gt 1 ]; then
 			dq_keywords="${dq_keywords:+${dq_keywords},}${dq_ui}"
+			dq_upd_search_formatted_var
 			dq_search_on=0
 		else
 			if [ ${dq_ctrl_d} -eq 0 ]; then
@@ -546,7 +614,7 @@ dev_query(){
 			dq_fold "${dq_tmp_print}"
 			dq_overwrite_search_start_lines="${dq_last_fold_count_lines}"
 			
-			# simulate the search if duplicate dq_ui
+			# simulate the search if no duplicate dq_ui
 			if [ ${dq_ui_duplicate} -eq 1 ]; then
 				dq_search_keywords
 			fi
@@ -697,6 +765,12 @@ ${dq_count_wording}${dq_block_wording}\n"
 				dq_ui=${dq_ui#k+}
 				# unfocused search
 				dq_k_search=0
+				dq_process_keywords
+				;;
+			\"+*)
+				# quoted search
+				dq_ui=${dq_ui#\"+}
+				dq_ui="\"${dq_ui}\""
 				dq_process_keywords
 				;;
 			b|B)
@@ -860,8 +934,6 @@ ${dq_count_wording}${dq_block_wording}\n"
 						else
 							dq_quoted_target_libcode="${dq_target_libcode}"
 						fi
-						
-						
 						
 						
 						dq_v_wording=''

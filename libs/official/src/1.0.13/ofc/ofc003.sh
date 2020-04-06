@@ -17,6 +17,31 @@ ofc003_changelog_template='
 +----------------------------------+
 %b'
 
+ofc003_rls_3=$( printf "${ofc003_changelog_template}" '1.2.21' '1.0.13' \
+">>> shlibs Application 1.2.21
+- important addition: it is now possible to search for a precise sequence \
+of words; in query/setup script mode use [\"+search sequence], or \
+[\"search sequence\"] to look for a precise sequence of words; this syntax \
+cancels default behavior considering space character as AND operator, and \
+comma character as OR operator
+- eliminated duplicated declaration of ss_psl_shlibs_ere in shlibs_setup_script.sh
+- corrected highlighting of replacements of shlibs instances when processing \
+scripts
+- prevented display of trap errors if any occuring (detected SIGKILL on FreeBSD)
+- corrected redirection by replacing tr interval values with specific values \
+in order to match application strategy
+ 
+ 
+>>> shlibs Official Libraries 1.0.13
+- str050 - upgrade to release 2: corrected an error causing wrap at 'size-1' \
+instead of 'size' as designed
+- str058 - upgrade to release 2: corrected an error causing wrap at 'size-1' \
+instead of 'size' as designed
+- tst001 - upgrade to release 3: improved eval syntax to avoid errors on \
+all implementations of this tool
+- ofc001, ofc002, ofc003 - upgrade to release 3: changed version and release numbers
+" )
+
 ofc003_rls_2=$( printf "${ofc003_changelog_template}" '1.1.16' '1.0.7' \
 ">>> shlibs Application 1.1.16
 - significant improvement: introduced option 'C' which clears (query) or \
@@ -42,7 +67,8 @@ libs are in use and selection is complete
 - deleted erroneous file
 - created CODE_OF_CONDUCT.md, REQUESTS.md, TODO.md
 - update issue templates
-\n
+ 
+ 
 >>> shlibs Official Libraries 1.0.7
 - trm001 - new addition: Get cursor position in terminal (u.o.m. characters)
 - tst001 - upgrade to release 2: improved handling when testing versions of \
