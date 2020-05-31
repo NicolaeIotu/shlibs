@@ -1,9 +1,0 @@
-l_b_c: str065
-r_l_s: 1
-k_y_w: strings,chars,characters,text,files,isalnum,iswalnum,alphanumeric,alfa,letters,digits,numbers,lowercase,uppercase,not
-k_y_w: blanks,isblank,iswblank,hortizontaltabs,spaces,0x20,0x09,isdigit,iswdigit,isnumeric,numbersonly
-k_y_w: islower,iswlower,lowercased,nolowercase,punctuation,ispunct,iswpunct,isupper,iswupper,uppercased,nouppercase
-k_y_w: isalpha,iswalpha,isalnum,iswalnum,iscntrl,iswcntrl,control,isgraph,iswgraph,graphical,representable
-k_y_w: isprint,iswprint,printable,isxdigit,iswxdigit,ishexdigit,hexadecimal
-k_y_w: isspaces,iswspace,iswhitespaces,cr,lf,ff,ht,vt,tabs,horizontal,vertical,carriage,return,line,form,feed
-i_n_f: Test string/file contains only (or no) classes of chars / chars

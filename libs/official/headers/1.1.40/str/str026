@@ -1,0 +1,4 @@
+l_b_c: str026
+r_l_s: 2
+k_y_w: strings,chars,characters,text,files,dimension,limit,fold,wordwrap,size,count,alignleft,leftalign,wrapword,squeeze,shrink_to_fit
+i_n_f: Fold/wrap a string/file to specified size (align left)

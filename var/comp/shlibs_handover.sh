@@ -7,11 +7,9 @@
 
 # Author Nicolae Iotu, nicolae.g.iotu@gmail.com
 
-
-. './var/comp/ptbl/shlibs_err.sh'
 . './var/comp/shlibs_settings_adjust.sh'
+. './var/comp/ptbl/shlibs_err.sh'
 . './var/comp/ptbl/shlibs_utils.sh'
-. './var/comp/shlibs_dev_utils.sh'
 
 # query shlibs
 if [ ${#} -eq 0 ]; then
@@ -24,7 +22,7 @@ if [ ${#} -eq 0 ]; then
 			. './var/comp/shlibs_dev_query.sh'
 			dev_query 0
 		fi
-		sdu_cleanup_tmp_onexit
+		su_cleanup_tmp_onexit
 	else
 		s_err 'Interactive mode available only in terminal.'
 		exit 1
@@ -40,8 +38,10 @@ fi
 # handle lib requests
 sg_lib_format='^[a-zA-Z0-9/_-][a-zA-Z0-9 ./_-]*$'
 if echo "${1}" | ${SHLIBS_GREP} "${sg_lib_format}" >/dev/null 2>&1 ; then
+	rl_cleanup_vars=0
+	export rl_cleanup_vars
 	. './var/comp/shlibs_run_lib.sh'
-		exit ${?}
+	exit ${?}
 else
 	s_err 'Lib codes allow chars: a-zA-Z0-9./_-'
 	exit 1

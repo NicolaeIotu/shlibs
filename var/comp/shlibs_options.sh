@@ -166,7 +166,10 @@ Use 'shlibs ${1}', or 'shlibs ${1} libcode'"
 			opts_block_default_function=0
 			export opts_block_default_function
 			
+			rl_cleanup_vars=0
+			export rl_cleanup_vars
 			. './var/comp/shlibs_run_lib.sh'
+			unset -v rl_cleanup_vars
 		fi	
 		
 		exit ${?}
@@ -235,6 +238,8 @@ do
 				# and is script dependent if a -d is not specified
 				so_dest_script_name="${opts_nrscript##*/}"
 				so_dest_script_path="${ss_opts_destination}/${so_dest_script_name}"
+				echo "${ss_opts_destination}"
+				echo "./${so_dest_script_name}"
 				printf "\nTesting: %s
 ============================================================\n" \
 					"${so_dest_script_path}"
@@ -242,13 +247,13 @@ do
 				(
 					PATH='/bin:/sbin:/usr/bin:/usr/sbin'
 					unset SHLIBS_HOME 2>/dev/null
-					unset SHLIBS_SHELL_PATH 2>/dev/null
 					cd "${ss_opts_destination}"
 					/bin/sh "./${so_dest_script_name}"
 				)
 				printf "\
 ============================================================
-End test: %s\n" "${so_dest_script_path}"
+\033[1mTest Exit Code: %s\033[m
+End test: %s\n" "${?}" "${so_dest_script_path}"
 			fi
 		fi
 	else
@@ -277,4 +282,4 @@ End test: %s\n" "${so_dest_script_path}"
 done
 IFS=${o_ifs}
 # end processing scripts
-sdu_cleanup_tmp_onexit
+su_cleanup_tmp_onexit

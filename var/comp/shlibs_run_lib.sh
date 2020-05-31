@@ -21,12 +21,12 @@ else
 	. './var/comp/ptbl/shlibs_redir.sh'
 
 	if [ "${shlibs_redir_vars_flag}" = '0' ]; then
-		unset shlibs_redir_vars_flag
+		unset -v shlibs_redir_vars_flag
 		if [ "${SHLIBS_COMPLEX_PIPE}" = '0' ]; then
-			unset SHLIBS_COMPLEX_PIPE
+			unset -v SHLIBS_COMPLEX_PIPE
 			./shlibs "${@}" ${shlibs_redir_vars}
 		else
-			unset SHLIBS_COMPLEX_PIPE
+			unset -v SHLIBS_COMPLEX_PIPE
 			./shlibs "${@}" "${shlibs_redir_vars}"
 		fi
 		exit ${?}
@@ -84,25 +84,23 @@ done
 
 
 # filter libcode
-rl_dev_code="${1}"
-# important: pos params shifted 
-shift
-
-# force a maximum number of params
-if [ ${#} -gt 20 ]; then
-	s_err "Maximum number of params (20) exceeded."
+if [ ${#} -gt 0 ]; then
+	rl_dev_code="${1}"
+	# important: pos params shifted 
+	shift
+else
+	s_err 'Missing library code!'
 	exit 1
 fi
 
 
-rl_count_libs_found=0 rl_force_section=1 rl_section=''
-if [ -z "${rl_has_setenv}" ]; then
-	if type setenv >/dev/null 2>&1 ; then
-		rl_has_setenv=0
-	else
-		rl_has_setenv=1
-	fi
+# force a maximum number of params
+if [ ${#} -gt 20 ]; then
+	s_err 'Maximum number of params (20) exceeded.'
+	exit 1
 fi
+
+rl_count_libs_found=0 rl_force_section=1 rl_section=''
 
 rl_post_find_preps() {
 	# find outputs at least a line; filter here empty output
@@ -176,28 +174,40 @@ rl_find() {
 	if [ -d "${rl_lib_find_path}" ]; then
 		# look for optimized! version of libs (src and headers)
 		if [ -d "${rl_lib_find_path}/src" ] && [ -d "${rl_lib_find_path}/headers" ]; then
-			rl_lib_find_path="${rl_lib_find_path}/src"
+			rl_lib_src_path="${rl_lib_find_path}/src"
 			rl_lib_headers_path="${rl_lib_find_path}/headers"
 		else
+			rl_lib_src_path="${rl_lib_find_path}"
 			rl_lib_headers_path=''
 		fi
 		# find while stripping any preceding /
-		rl_lib_path=$(find -L "${rl_lib_find_path}" -name "${rl_fl#/}" -type f)
+		rl_lib_path=$(find -L "${rl_lib_src_path}" -type f \
+			-name "${rl_fl#/}" ! -name "*.dat")
 	else
 		return
 	fi
-		
-	rl_count_libs_found=$(echo "${rl_lib_path}" | wc -l | xargs echo)
 	
+	rl_count_libs_found=$(echo "${rl_lib_path}" | wc -l | xargs echo)	
 	if [ ${rl_count_libs_found} -eq 1 ]; then
 		rl_post_find_preps
-	elif [ "${rl_count_libs_found}" -gt 1 ]; then
+	elif [ ${rl_count_libs_found} -gt 1 ]; then
 		# multiple libs same name
 		# trying to get the latest version (for optimized only)
 		if [ -n "${rl_lib_headers_path}" ]; then
+			# test for a case where the libs found are located in the same
+			# dir, erroneously having the same name and different extension
+			rl_test_err=$(echo "${rl_lib_path}" | xargs dirname -- | uniq \
+				| wc -l | xargs echo)
+			if [ ${rl_test_err} -ne ${rl_count_libs_found} ]; then
+				s_err "Duplicate library names found for '${rl_dev_code}': 
+${rl_lib_path}"
+				exit 1
+			fi
+			unset -v rl_test_err
+			
 			# section comparable with dq_get_version() handling of versions
 			# (change both if required)
-			IFS=${nl}
+			IFS=${_nl}
 			rl_mvers=0
 			rl_find_index=0
 			for rl_mvers_lib in ${rl_lib_path}
@@ -335,9 +345,10 @@ Use 'shlibs' to search for a library code first."
 fi
 
 
+rl_lib_dirpath=$( dirname -- "${rl_lib_path}" )
 # if required return the script path
 if [ ${rl_get_script_path} -eq 0 ]; then
-	p_path=$( cd "$( dirname -- "${rl_lib_path}" )" ; pwd -L ) || err_fs
+	p_path=$( cd "${rl_lib_dirpath}" ; pwd -L ) || err_fs
 	p_path_bn="${rl_lib_path##*/}"
 	echo "${p_path}/${p_path_bn}"
 	exit
@@ -345,13 +356,25 @@ fi
 
 
 rl_restore_lang() {
-	if [ ${rl_has_setenv} -eq 0  ]; then
-		setenv LANG=${prev_LC_MESSAGES}
+	if [ ${SHLIBS_HAS_SETENV} -eq 0  ]; then
+		setenv LANG=${SHLIBS_ORIG_LC_MESSAGES}
 	else
-		LANG=${prev_LC_MESSAGES}
+		LANG=${SHLIBS_ORIG_LC_MESSAGES}
 		export LANG
 	fi
 }
+
+# unset here all vars not required when running a library or it's utilities
+# this is not done for query or setup calls
+if [ "x${rl_cleanup_vars}" = 'x0' ]; then
+	unset -v sg_lib_format SHLIBS_CLEANUP_DISPLAY SHLIBS_SHOW_VERSION_IN_QUERY \
+		SHLIBS_MATCH_HIGHLIGHT SHLIBS_MATCH_MAX SHLIBS_MATCH_PAGE_SIZE \
+		SHLIBS_MAX_RESULTS_MEM SHLIBS_SHOW_OPTIONS SHLIBS_FORCE_SHELL \
+		SHLIBS_TERMINAL_CHAR_WIDTH \
+		rl_specific_parse_count rl_get_script_path rl_count_libs_found \
+		rl_find_index rl_slash_seq rl_cleanup_vars shlibs_fb shlibs_redir_vars \
+		shlibs_redir_vars_flag shlibs_redirect rl_test_lib_wording_output		
+fi
 
 
 if [ -f "${rl_lib_path}" ] && [ -r "${rl_lib_path}" ]; then
@@ -382,33 +405,25 @@ if [ -f "${rl_lib_path}" ] && [ -r "${rl_lib_path}" ]; then
 			else
 				# other types of scripts
 				return 255 2>/dev/null
-			fi			
-			
-			if type locale >/dev/null 2>&1 ; then
-				# making sure 'function' keyword will be used
-				prev_LC_MESSAGES=$(locale | ${SHLIBS_GREP} LC_MESSAGES 2>/dev/null)
-				prev_LC_MESSAGES=${prev_LC_MESSAGES#*\"}
-				prev_LC_MESSAGES=${prev_LC_MESSAGES%\"}
-				prev_LC_MESSAGES=$(echo ${prev_LC_MESSAGES} | \
-					${SHLIBS_GREP} -E "^(POSIX|C|en_.*)$" 2>/dev/null)
-			else
-				# this case is for systems where locale is not found
-				prev_LC_MESSAGES=POSIX
 			fi
 			
-			rl_plc=$(echo ${prev_LC_MESSAGES} | wc -l | xargs echo)
-			if [ -n "${prev_LC_MESSAGES}" ] && [ ${rl_plc} -eq 1 ]; then :
+			# making sure 'function' keyword will be used
+			rl_plc=$(echo ${SHLIBS_ORIG_LC_MESSAGES} | wc -l | xargs echo)
+			if [ -n "${SHLIBS_ORIG_LC_MESSAGES}" ] && [ ${rl_plc} -eq 1 ]; then :
 			else
-				if [ ${rl_has_setenv} -eq 0 ] ; then
+				if [ ${SHLIBS_HAS_SETENV} -eq 0 ] ; then
 					setenv LANG=POSIX
 				else
 					LANG=POSIX
 					export LANG
 				fi
 			fi
+			if [ "${rl_cleanup_vars}" = '0' ]; then
+				unset -v rl_plc
+			fi
 			
 			# by default shlibs runs the default function unless -z specified
-			if [ "${opts_block_default_function}" != "0" ]; then
+			if [ "${opts_block_default_function}" != '0' ]; then
 				if type "${rl_dev_code_bn}" 2>/dev/null | \
 					${SHLIBS_GREP} 'function' >/dev/null 2>&1 ; then
 					rl_restore_lang
@@ -490,7 +505,8 @@ Missing '${rl_dev_code_bn}_examples' function."
 		
 		# critical! regular library calls Must Not return code 255	
 		if [ ${SHLIBS_SCRIPT_EXIT_CODE} -eq 255 ]; then
-			# other scripts (php, perl, python etc) ; must be executable (+x)
+			# for best performance other types of scripts \
+			# (php, perl, python etc) should be executable (+x)
 			if [ -x "${rl_lib_path}" ]; then
 				rl_remove_x=1
 			else

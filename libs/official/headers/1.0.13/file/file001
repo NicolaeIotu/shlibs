@@ -1,4 +1,0 @@
-l_b_c: file001
-r_l_s: 1
-k_y_w: files,text,string,compare,equals,same,content,identical,match
-i_n_f: Checks if two files have the same content (+-case insensitive)

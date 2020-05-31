@@ -11,18 +11,17 @@
 
 # shell vars
 SHLIBS_SHELL='dash'
-sts_allowed_shells='dash,sh,bash,ksh'
+sts_allowed_shells='dash sh bash ksh'
 SHLIBS_SHELL_PATH='/bin/dash'
 
 sts() {
 	SHLIBS_SHELL_PATH=`type "${1}" 2>/dev/null`
 	if [ -n "$SHLIBS_SHELL_PATH" ]; then
-		IFS=' '
 		for sts_ssp in ${SHLIBS_SHELL_PATH}
 		do :
 		done
 		SHLIBS_SHELL_PATH="${sts_ssp}"
-		IFS=${o_ifs}
+		#IFS=${o_ifs}
 	else
 		return 1
 	fi
@@ -48,7 +47,6 @@ if [ -n "${SHLIBS_FORCE_SHELL}" ]; then
 	sts_allowed_shells=$SHLIBS_FORCE_SHELL
 fi
 
-IFS=','
 for SHLIBS_SHELL in ${sts_allowed_shells}
 do
 	SHLIBS_SHELL_PATH=''
@@ -62,7 +60,4 @@ do
 		fi
 	fi
 done
-IFS=${o_ifs}
-
-export SHLIBS_SHELL
-export SHLIBS_SHELL_PATH
+export SHLIBS_SHELL SHLIBS_SHELL_PATH

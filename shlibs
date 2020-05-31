@@ -36,19 +36,16 @@
 	umask 0002
 	
 	IFS=`printf '%b' ' \t\n'`
-	export IFS
 	o_ifs=${IFS}
-	export o_ifs
 	
 	if [ -n "${SHLIBS_HOME}" ]; then
 		shlibs_dirpath="${SHLIBS_HOME}"
 	else
 		shlibs_dirpath=`cd "\`dirname -- "${0}" 2>/dev/null\`" ; pwd -L` || exit 1
 	fi
-	export shlibs_dirpath
 	
 	shlibs_cwd=`pwd -L`
-	export shlibs_cwd
+	export IFS o_ifs shlibs_dirpath shlibs_cwd
 	
 	cd "${shlibs_dirpath}" || exit 1
 	
@@ -78,7 +75,6 @@
 	fi
 	
 	. './var/shlibs_settings.sh'
-	
 	. "${tcs}"
 	
 	exec "${SHLIBS_SHELL_PATH}" \

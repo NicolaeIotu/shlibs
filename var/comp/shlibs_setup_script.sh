@@ -9,24 +9,22 @@
 
 . ./var/comp/shlibs_dev_query.sh
 
-_s_='[^a-zA-Z0-9_]'
 # identifies replaceable shlibs instances
-ss_psl_shlibs_ere="${_s_}shlibs${_s_}|^shlibs${_s_}|^shlibs$|${_s_}shlibs$"
+_s_='[^a-zA-Z0-9_]?'
+ss_psl_shlibs_ere="${_s_}shlibs${_s_}"
 
 proc_shlibs_line(){	
 	# get line number and line content
 	ss_psl_line_no="${1%:*}"
 	ss_psl_line_content="${1#${ss_psl_line_no}:}"
-	
+
 	# $ss_psl_line_content can have multiple instances of shlibs
 	ss_psl_shlibs_count=$(echo "${ss_psl_line_content}" | \
-		${SHLIBS_AWK} -v SHL="${ss_psl_shlibs_ere}" \
-			'{ print gsub(SHL, "") }')
-	
-	ss_wording_at_line="At line #${ss_psl_line_no} found ${ss_psl_shlibs_count} instance(s):"
-	ss_intro="${ss_intro}${nl}${ss_wording_at_line}"
-	echo "${ss_wording_at_line}"
+		${SHLIBS_AWK} -v SHL="${ss_psl_shlibs_ere}" '{ print gsub(SHL, "") }')
 
+	ss_wording_at_line="At line #${ss_psl_line_no} found ${ss_psl_shlibs_count} instance(s):"
+	ss_intro="${ss_intro}${_nl}${ss_wording_at_line}"
+	echo "${ss_wording_at_line}"
 	
 	# Prefix - Match - Sufix
 	if [ "${ss_psl_shlibs_count}" -ge 1 ]; then
@@ -34,9 +32,11 @@ proc_shlibs_line(){
 		ss_psl_hlt="${SHLIBS_MATCH_HIGHLIGHT}"
 		ss_psl_hlt="${ss_psl_hlt}${ss_psl_hlt}${ss_psl_hlt}"
 		ss_psl_preprefix=''
+		ss_psl_preprefix_print=''
 		ss_psl_wlc="${ss_psl_line_content}"
 		ss_psl_instance_no=1
 		ss_psl_chosen_match=''
+		ss_psl_chosen_match_print=''
 		while [ "${ss_psl_instance_no}" -le "${ss_psl_shlibs_count}" ]
 		do
 			# reset chosen_lib and the option to get lib path
@@ -62,10 +62,13 @@ proc_shlibs_line(){
 				${SHLIBS_AWK} '{ match($0, /shlibs/); 
 				print substr($0, 1, RSTART-1)"'"${ss_psl_hlt}\033[1;31m"'"substr($0, RSTART, 
 				RLENGTH)"'"\033[m${ss_psl_hlt}"'"substr($0, RSTART+RLENGTH) }' -)
+
+			ss_psl_pre_match="${ss_psl_match%%shlibs*}"
+			ss_psl_post_match="${ss_psl_match##*shlibs}"
 			
 			ss_wording_line="- line ${ss_psl_line_no}/instance ${ss_psl_instance_no}: \
 ${ss_psl_preprefix}${ss_psl_prefix}${ss_psl_precise_match}${ss_psl_sufix}"
-			ss_intro="${ss_intro}${nl}${ss_wording_line}"
+			ss_intro="${ss_intro}${_nl}${ss_wording_line}"
 			printf -- "${ss_wording_line}\n"
 			
 			if dev_query 1 ; then	
@@ -83,14 +86,17 @@ ${ss_psl_preprefix}${ss_psl_prefix}${ss_psl_precise_match}${ss_psl_sufix}"
 				# return 1 = cancel setup of this line
 				printf "\tSkipping the rest of instances on line %s.\n" \
 					"${ss_psl_line_no}"
-				ss_psl_chosen_match=${ss_psl_match}			
+				ss_psl_chosen_match=${ss_psl_match}
 			fi
-			
-			ss_psl_wlc="${ss_psl_sufix}"
-			ss_psl_chosen_match="$( echo "${ss_psl_chosen_match}" | \
+
+			ss_psl_wlc="${ss_psl_sufix}"	
+			ss_psl_chosen_match_print="$( echo "${ss_psl_chosen_match%%${ss_psl_post_match}}" | \
 				sed 's/shlibs/\\033\[1;31mshlibs/' )"
-			ss_psl_chosen_match="${ss_psl_chosen_match}"'\033[m'
+			ss_psl_chosen_match_print="${ss_psl_chosen_match_print}"'\033[m'"${ss_psl_post_match}"
+
 			ss_psl_preprefix="${ss_psl_preprefix}${ss_psl_prefix}${ss_psl_chosen_match}"
+			ss_psl_preprefix_print="${ss_psl_preprefix_print}${ss_psl_prefix}${ss_psl_chosen_match_print}"
+
 			ss_psl_instance_no=$((ss_psl_instance_no+1))
 		done
 	else
@@ -100,7 +106,7 @@ ${ss_psl_preprefix}${ss_psl_prefix}${ss_psl_precise_match}${ss_psl_sufix}"
 	fi
 	
 	ss_wording_becomes="Line #${ss_psl_line_no} becomes:
-${ss_psl_preprefix}${ss_psl_sufix}"
+${ss_psl_preprefix_print}${ss_psl_sufix}"
 	ss_intro="${ss_intro}\n${ss_wording_becomes}"
 	printf "${ss_wording_becomes}\n"
 	
@@ -220,7 +226,7 @@ Try using -d to specify destination, or change current working directory.'
 			else
 				s_err "Error(s) occured while scanning ${1}"
 				return 1
-			fi	
+			fi
 			
 				
 			
@@ -233,7 +239,7 @@ Try using -d to specify destination, or change current working directory.'
 				
 			ss_awk_repl=''
 			ss_awk_ln=''
-			IFS=${nl}
+			IFS=${_nl}
 			for ss_scriptline in ${scan_shlibs_output}
 			do
 				ss_msln=0
@@ -419,7 +425,7 @@ sed could not process final replacements.'
 			# include multiscript+dev dest case
 			if [ -z "${opts_dev_destination}" ] || \
 				{ [ -n "${opts_dev_destination}" ] && \
-				 [ "${2}" = "0" ] ; } ; then
+				 [ "${2}" = '0' ] ; } ; then
 				printf "Transfer the folder '%s' and contents to any POSIX \
 compliant system. Visit https://shlibs.org, https://shlibs.net and get info on how to ensure \
 cross OS compatibility of your scripts.\n" "${ss_opts_destination}"

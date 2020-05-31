@@ -9,21 +9,9 @@
 
 # TAG: PRE-H/O, TEST
 
-# important: among others, cannot use parameter expansion expressions
+# important: among others, cannot use parameter expansion
 
 shlibs_err_path='./var/comp/ptbl/shlibs_err.sh'
-
-# important: enables support for paths containing spaces
-shlibs_dirpath_esc=''
-for path_part in ${shlibs_dirpath:?}
-do
-	if [ -n "${shlibs_dirpath_esc}" ]; then
-		shlibs_dirpath_esc="${shlibs_dirpath_esc}\ "
-	fi
-	shlibs_dirpath_esc="${shlibs_dirpath_esc}${path_part}"
-done
-export shlibs_dirpath_esc
-
 
 # SECTION 1_core
 # test shell core capabilities

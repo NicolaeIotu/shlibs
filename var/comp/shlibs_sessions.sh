@@ -12,7 +12,7 @@ if [ -z "${shlibs_session}" ]; then
 	mkdir -p './var/tmp'
 	while [ -d "./var/tmp/${shlibs_session}" ]
 	do
-		if shlibs_session=$(./shlibs str005 5) ; then :
+		if shlibs_session=$(./shlibs str005) ; then :
 		else
 			s_err 'Cannot create session. Missing lib code str005.'
 			exit 1

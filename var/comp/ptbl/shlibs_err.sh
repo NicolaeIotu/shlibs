@@ -10,9 +10,8 @@
 # TAGS: PRE-H/O, PORTABLE
 
 S_ERR_1="Invalid arguments. Use 'shlibs -h %s' for help.\n"
-export S_ERR_1
 S_ERR_2="Flag '-f' does not allow processing of extra strings."
-export S_ERR_2
+export S_ERR_1 S_ERR_2
 
 s_err() {
 	if [ -n "${1}" ]; then

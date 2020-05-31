@@ -1,0 +1,4 @@
+l_b_c: file003
+r_l_s: 1
+k_y_w: files,lines,endswith,newline,new line,append,correct,fix
+i_n_f: Checks if a file ends with new line (option to append new line)

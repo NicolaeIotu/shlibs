@@ -11,18 +11,16 @@
 
 # awk vars
 SHLIBS_AWK='awk'
-sta_allowed_awk='awk,nawk,gawk,mawk'
+sta_allowed_awk='awk gawk mawk'
 SHLIBS_AWK_PATH='/bin/awk'
 
 sta() {
 	SHLIBS_AWK_PATH=`type "${1}" 2>/dev/null`
 	if [ -n "$SHLIBS_AWK_PATH" ]; then
-		IFS=' '
 		for sta_sap in ${SHLIBS_AWK_PATH}
 		do :
 		done
 		SHLIBS_AWK_PATH="${sta_sap}"
-		IFS=${o_ifs}
 	else
 		return 1
 	fi
@@ -46,7 +44,6 @@ sta() {
 }
 
 
-IFS=','
 for SHLIBS_AWK in ${sta_allowed_awk}
 do
 	SHLIBS_AWK_PATH=''
@@ -60,6 +57,13 @@ do
 		fi
 	fi
 done
-IFS=${o_ifs}
-export SHLIBS_AWK
-export SHLIBS_AWK_PATH
+# default (bin) awk on Solaris is highly unreliable for shlibs tasks
+if [ -z "${SHLIBS_AWK_PATH}" ]; then
+	# add here logic for other OSes if required
+	if file /usr/xpg4/bin/awk | grep executable >/dev/null 2>&1 ; then
+		# Solaris
+		SHLIBS_AWK='/usr/xpg4/bin/awk'
+		SHLIBS_AWK_PATH='/usr/xpg4/bin/awk'
+	fi
+fi
+export SHLIBS_AWK SHLIBS_AWK_PATH

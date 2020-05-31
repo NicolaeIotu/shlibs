@@ -1,0 +1,4 @@
+l_b_c: file002
+r_l_s: 1
+k_y_w: files,temporary,create,removable,deletable
+i_n_f: Create a temporary file and return the path to it

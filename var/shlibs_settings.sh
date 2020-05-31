@@ -13,13 +13,11 @@
 # The number of results per page
 # default: 10 (interval 3-50)
 SHLIBS_MATCH_PAGE_SIZE=10
-export SHLIBS_MATCH_PAGE_SIZE
 
 
 # The maximum number of results displayed
 # default: 400 (use 0 to display all; minimum 5)
 SHLIBS_MATCH_MAX=400
-export SHLIBS_MATCH_MAX
 
 
 # The maximum number of results kept in memory
@@ -28,32 +26,27 @@ export SHLIBS_MATCH_MAX
 # slow down search related operations, but decrease memory load.
 # default: 10000
 SHLIBS_MAX_RESULTS_MEM=10000
-export SHLIBS_MAX_RESULTS_MEM
 
 
 # Shows options and shortcuts when query or setup is active
 # default: 0 (meaning true)
 SHLIBS_SHOW_OPTIONS=0
-export SHLIBS_SHOW_OPTIONS
 
 
 # When setting up a script ( -s ), instances of 'shlibs'
 # will be highlighted ( i.e. *** shlibs *** ) using below character 
 # default: *
 SHLIBS_MATCH_HIGHLIGHT="*"
-export SHLIBS_MATCH_HIGHLIGHT
 
 
 # Keeps the terminal clean.
 # default: 0 (meaning true) (recommended)
 SHLIBS_CLEANUP_DISPLAY=0
-export SHLIBS_CLEANUP_DISPLAY
 
 
 # This setting is used to fold lines in order to fit display device.
 # default: 80 (minimum 36)
 SHLIBS_TERMINAL_CHAR_WIDTH=80
-export SHLIBS_TERMINAL_CHAR_WIDTH
 
 
 # Forces shlibs to run using specified shell 
@@ -61,7 +54,6 @@ export SHLIBS_TERMINAL_CHAR_WIDTH
 # default: '' (auto selection)
 # usage: SHLIBS_FORCE_SHELL='bash'
 SHLIBS_FORCE_SHELL=''
-export SHLIBS_FORCE_SHELL
 
 
 # Prints the version of each lib when showing the list of search results
@@ -69,4 +61,6 @@ export SHLIBS_FORCE_SHELL
 # when developing new versions of libs or/and using own libs/versions.
 # default: 1 (meaning false)
 SHLIBS_SHOW_VERSION_IN_QUERY=1
-export SHLIBS_SHOW_VERSION_IN_QUERY
+export SHLIBS_MATCH_PAGE_SIZE SHLIBS_MATCH_MAX SHLIBS_MAX_RESULTS_MEM \
+	SHLIBS_SHOW_OPTIONS SHLIBS_MATCH_HIGHLIGHT SHLIBS_CLEANUP_DISPLAY \
+	SHLIBS_TERMINAL_CHAR_WIDTH SHLIBS_FORCE_SHELL SHLIBS_SHOW_VERSION_IN_QUERY

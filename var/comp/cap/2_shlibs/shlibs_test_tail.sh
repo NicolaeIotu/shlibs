@@ -20,7 +20,7 @@ stt() {
 	else
 		# add here checks for other OSes if required
 		if file /usr/xpg4/bin/tail | grep executable >/dev/null 2>&1 ; then
-			# Solaris 10
+			# Solaris
 			SHLIBS_TAIL='/usr/xpg4/bin/tail'
 		else
 			SHLIBS_TAIL=''

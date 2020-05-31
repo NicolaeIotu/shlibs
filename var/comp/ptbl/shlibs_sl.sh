@@ -46,16 +46,10 @@
 		
 		# make sure local shlibs is used first (this is just a subshell modif)
 		PATH="${shlibs_dirpath}:${PATH}"
-		export PATH
-		
 		IFS=`printf '%b' ' \t\n'`
-		export IFS
 		o_ifs=${IFS}
-		export o_ifs
 		
-		export shlibs_cwd
-		export shlibs_dirpath
-		export shlibs_path
+		export PATH IFS o_ifs shlibs_cwd shlibs_dirpath shlibs_path
 		
 		##sed S_F_S##
 		export SHLIBS_FORCE_SHELL

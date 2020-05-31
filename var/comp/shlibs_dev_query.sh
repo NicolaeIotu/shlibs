@@ -8,7 +8,7 @@
 # Author Nicolae Iotu, nicolae.g.iotu@gmail.com
 
 trap - INT KILL TERM 2>/dev/null
-trap sdu_cleanup_tmp_onexit INT KILL TERM 2>/dev/null
+trap su_cleanup_tmp_onexit INT KILL TERM 2>/dev/null
 
 . ./var/comp/shlibs_sessions.sh
 . ./var/comp/shlibs_dq_output.sh
@@ -27,7 +27,7 @@ dq_get_version() {
 	dq_mvers=0
 	dq_find_index=0
 	dq_mfind_index=0
-	IFS=${nl}
+	IFS=${_nl}
 	for dq_mvers_lib in ${dq_opti_hdr_for_code}
 	do
 		dq_find_index=$((dq_find_index+1))
@@ -276,7 +276,7 @@ dq_trav_dir() {
 	cd "${1}" || err_fs
 	for td_file in ./*
 	do
-		if [ ${dq_search_result_count} -ge ${SHLIBS_MATCH_MAX} ]; then
+		if [ ${dq_search_result_count} -ge ${SHLIBS_ADJ_MATCH_MAX} ]; then
 			cd "${shlibs_dirpath}" || err_fs
 			return
 		fi
@@ -346,19 +346,19 @@ dq_search_keywords() {
 	else
 		dq_search_rep_seq "official"
 		cd "${shlibs_dirpath}" || err_fs
-		if [ ${dq_search_result_count} -ge ${SHLIBS_MATCH_MAX} ]; then
+		if [ ${dq_search_result_count} -ge ${SHLIBS_ADJ_MATCH_MAX} ]; then
 			return
 		fi
 		
 		dq_search_rep_seq "dev"
 		cd "${shlibs_dirpath}" || err_fs
-		if [ ${dq_search_result_count} -ge ${SHLIBS_MATCH_MAX} ]; then
+		if [ ${dq_search_result_count} -ge ${SHLIBS_ADJ_MATCH_MAX} ]; then
 			return
 		fi
 		
 		dq_search_rep_seq "community"
 		cd "${shlibs_dirpath}" || err_fs
-		if [ ${dq_search_result_count} -ge ${SHLIBS_MATCH_MAX} ]; then
+		if [ ${dq_search_result_count} -ge ${SHLIBS_ADJ_MATCH_MAX} ]; then
 			return
 		fi
 	fi
@@ -625,8 +625,8 @@ dev_query(){
 			fi
 			
 			if [ ${dq_search_result_count} -gt 0 ]; then
-				dq_max_page=$((dq_search_result_count/SHLIBS_MATCH_PAGE_SIZE))
-				dq_rc=$((dq_max_page*SHLIBS_MATCH_PAGE_SIZE))
+				dq_max_page=$((dq_search_result_count/SHLIBS_ADJ_MATCH_PAGE_SIZE))
+				dq_rc=$((dq_max_page*SHLIBS_ADJ_MATCH_PAGE_SIZE))
 				if [ ${dq_rc} -lt ${dq_search_result_count} ]; then
 					dq_max_page=$((dq_max_page+1))
 				fi
@@ -644,8 +644,8 @@ dev_query(){
 			dq_navigate=1
 				
 			if [ ${dq_oob_nav} -eq 1 ]; then
-				dq_page_start_index=$(((SHLIBS_MATCH_PAGE_SIZE*(dq_page-1))+1))
-				dq_page_end_index=$((SHLIBS_MATCH_PAGE_SIZE*dq_page))
+				dq_page_start_index=$(((SHLIBS_ADJ_MATCH_PAGE_SIZE*(dq_page-1))+1))
+				dq_page_end_index=$((SHLIBS_ADJ_MATCH_PAGE_SIZE*dq_page))
 				if [ ${dq_page_end_index} -gt ${dq_search_result_count} ]; then
 					dq_page_end_index=${dq_search_result_count}
 				fi
@@ -809,10 +809,9 @@ ${dq_count_wording}${dq_block_wording}\n"
 				ssa_run_adjustment
 				printf "${dq_intro}\n"
 				dq_reset 0
-				#return ${?}
 				;;
 			s|S)
-				if [ "${1}" = "0" ]; then
+				if [ "${1}" = '0' ]; then
 					dq_process_keywords
 				else
 					# skip instance
@@ -820,7 +819,7 @@ ${dq_count_wording}${dq_block_wording}\n"
 				fi
 				;;
 			l|L)
-				if [ "${1}" = "0" ]; then
+				if [ "${1}" = '0' ]; then
 					dq_process_keywords
 				else
 					# skip rest of line
@@ -832,7 +831,7 @@ ${dq_count_wording}${dq_block_wording}\n"
 				dq_show_full_help=0
 				;;
 			q)
-				sdu_cleanup_tmp_onexit
+				su_cleanup_tmp_onexit
 				;;
 			*)				
 				case ${dq_ui} in
@@ -1068,12 +1067,12 @@ cannot create destination ${dq_dep_dest_dir}"
 								fi
 							fi
 							
-							
-							if ${SHLIBS_AWK} '{ 
-								match($0,/'"${dq_libcode}"'_help|'"${dq_libcode}"'_examples/); 
-								if (RSTART==0) { print $0; } else { print RS; exit; } }' \
-								< "${dq_dep_src}" \
-								> "${dq_dep_dest}" ; then :
+							if ${SHLIBS_AWK} -v dq_libcode="${dq_libcode}" \
+							'BEGIN { omit_seq=dq_libcode"_help|"dq_libcode"_examples" }
+							{
+								match($0,omit_seq);
+								if (RSTART==0) { print $0; } else { print RS; exit; } 
+							}' <"${dq_dep_src}" >"${dq_dep_dest}" ; then :
 							else
 								s_err "Critical error: \
 cannot copy '${dq_dep_src}' to '${dq_dep_dest}'."
