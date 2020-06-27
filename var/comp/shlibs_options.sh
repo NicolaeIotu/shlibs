@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # shlibs is Copyright (C) 2020 Nicolae Iotu, nicolae.g.iotu@gmail.com
-# https://shlibs.org, https://shlibs.net       
+# https://shlibs.org, https://shlibs.net
 # License: Apache-2.0 modified with Convergence Terms (LICENSE-section 10)
 # "Use for free. Contribute rather than diverge."
 
@@ -18,8 +18,8 @@ while [ "${#}" != '0' ];
 do
 	case ${1} in
 		-reset)
-			if cp -f './var/comp/default/shlibs_settings_default.sh' \
-				'./var/shlibs_settings.sh' ; then
+			if cp -f "${shlibs_dirpath}/var/comp/default/shlibs_settings_default.sh" \
+				"${shlibs_dirpath}/var/shlibs_settings.sh" ; then
 				echo 'shlibs reset completed successfully!'
 				exit
 			else
@@ -153,10 +153,10 @@ Use 'shlibs ${1}', or 'shlibs ${1} libcode'"
 		if [ ${#} -eq 1 ] || [ -z "${2}" ]; then
 			# show shlibs main help
 			if [ ${opts_help} -eq 0 ]; then
-				. './var/comp/dlg/shlibs_help.sh'
+				. "${shlibs_dirpath}/var/comp/dlg/shlibs_help.sh"
 				printf "%b" "${SHLIBS_HELP}"
 			else
-				. './var/comp/dlg/shlibs_examples.sh'
+				. "${shlibs_dirpath}/var/comp/dlg/shlibs_examples.sh"
 				printf "%b" "${SHLIBS_EXAMPLES}"
 			fi
 		else
@@ -168,7 +168,7 @@ Use 'shlibs ${1}', or 'shlibs ${1} libcode'"
 			
 			rl_cleanup_vars=0
 			export rl_cleanup_vars
-			. './var/comp/shlibs_run_lib.sh'
+			. "${shlibs_dirpath}/var/comp/shlibs_run_lib.sh"
 			unset -v rl_cleanup_vars
 		fi	
 		
@@ -267,7 +267,7 @@ End test: %s\n" "${?}" "${so_dest_script_path}"
 					fi					
 				fi
 				if [ -d "${ss_opts_destination}" ]; then
-					if $( ./shlibs dir001 "${ss_opts_destination}" ) ; then :
+					if $( "${shlibs_dirpath}"/shlibs dir001 "${ss_opts_destination}" ) ; then :
 					else
 						s_err 'Cannot cleanup on errors!'
 						exit 1

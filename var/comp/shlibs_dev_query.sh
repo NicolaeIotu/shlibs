@@ -14,7 +14,7 @@ trap su_cleanup_tmp_onexit INT KILL TERM 2>/dev/null
 . ./var/comp/shlibs_dq_output.sh
 
 # libs version
-if dq_libs_version=$(./shlibs -h ofc002) ; then
+if dq_libs_version=$("${shlibs_dirpath}"/shlibs -h ofc002) ; then
 	export dq_libs_version
 else
 	s_err 'Critical Error: Cannot find the version of the libraries (lib code ofc002).'
@@ -578,7 +578,7 @@ dev_query(){
 			if [ ${dq_show_basic_help} -eq 0 ]; then
 				dq_show_basic_help=1
 				if [ -z "${SHLIBS_SETUP_DIALOG_BASIC_HELP}" ]; then
-					. './var/comp/dlg/shlibs_setup_basic_help.sh'
+					. "${shlibs_dirpath}/var/comp/dlg/shlibs_setup_basic_help.sh"
 				fi
 				
 				dq_tmp_print=$(printf "%b" "${SHLIBS_SETUP_DIALOG_BASIC_HELP}")
@@ -594,7 +594,7 @@ dev_query(){
 			else
 				dq_show_full_help=1
 				if [ -z "${SHLIBS_SETUP_DIALOG_FULL_HELP}" ]; then
-					. './var/comp/dlg/shlibs_setup_full_help.sh'
+					. "${shlibs_dirpath}/var/comp/dlg/shlibs_setup_full_help.sh"
 				fi
 				
 				dq_tmp_print=$(printf "%b" "${SHLIBS_SETUP_DIALOG_FULL_HELP}")
@@ -920,13 +920,13 @@ ${dq_count_wording}${dq_block_wording}\n"
 								else
 									set -- -z "${dq_target_libcode}"
 								fi
-								. './var/comp/shlibs_run_lib.sh'
+								. "${shlibs_dirpath}/var/comp/shlibs_run_lib.sh"
 							) >/dev/null 2>&1 #important
 															
 							continue
 						fi
 						
-						dq_quoted_target_libcode=$(./shlibs str001 \
+						dq_quoted_target_libcode=$("${shlibs_dirpath}"/shlibs str001 \
 							"${dq_target_libcode}" ' ')
 						if [ "${dq_quoted_target_libcode}" = '0' ] ; then
 							dq_quoted_target_libcode="'${dq_target_libcode}'"
@@ -1007,10 +1007,14 @@ ${dq_count_wording}${dq_block_wording}\n"
 							
 							
 							dq_dep_hdr_dest="${ss_opts_destination}/libs/${dq_dep_section}${dq_dep_hdr_dest}"
-							if [ "${dq_dep_section}" = 'official' ] ; then
+							if [ "${dq_dep_section}" = 'official' ]; then
 								dq_dep_dest="${ss_opts_destination}/libs/${dq_dep_section}${dq_dep_dest}"
 							else
-								dq_dep_dest="${ss_opts_destination}/libs/${dq_dep_dest}/${dq_libcode}"
+								if [ -n "${dq_dep_hdr}" ]; then
+									dq_dep_dest="${ss_opts_destination}/libs/${dq_dep_dest}"
+								else
+									dq_dep_dest="${ss_opts_destination}/libs/${dq_dep_dest}/${dq_libcode}"
+								fi
 							fi
 								
 							ss_opts_destination=${ss_opts_destination:?}
@@ -1024,7 +1028,7 @@ ${dq_count_wording}${dq_block_wording}\n"
 							if [ -n "${dq_dep_hdr}" ]; then
 								if [ -d "${dq_dep_hdr_dest}" ]; then :
 								else
-									if mkdir -p "${dq_dep_hdr_dest}" ; then : :
+									if mkdir -p "${dq_dep_hdr_dest}" ; then :
 									else
 										s_err "Critical error: \
 cannot create destination ${dq_dep_hdr_dest}"
@@ -1073,6 +1077,7 @@ cannot create destination ${dq_dep_dest_dir}"
 								match($0,omit_seq);
 								if (RSTART==0) { print $0; } else { print RS; exit; } 
 							}' <"${dq_dep_src}" >"${dq_dep_dest}" ; then :
+								# start checking the library for its dependencies
 							else
 								s_err "Critical error: \
 cannot copy '${dq_dep_src}' to '${dq_dep_dest}'."

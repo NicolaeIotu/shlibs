@@ -33,7 +33,7 @@
 			echo 'Error: execute script, or cd to script dir before sourcing it.'
 			return 1 2>/dev/null
 		fi
-	fi	
+	fi
 	shlibs_path="${shlibs_dirpath:?}/shlibs"
 	
 	# from this point use relative paths with no spaces
@@ -53,7 +53,11 @@
 		
 		##sed S_F_S##
 		export SHLIBS_FORCE_SHELL
-		. './var/comp/cap/shlibs_test_env.sh'
+		if [ -n "${SHLIBS_SHELL_PATH}" ]; then :
+			# skip tests (assumed passed) if a shlibs lib calls other shlibs libs
+		else
+			. "${shlibs_dirpath}/var/comp/cap/shlibs_test_env.sh"
+		fi
 		
 		if [ -r "./scripts/${d_s_b:?}" ]; then
 			exec "${SHLIBS_SHELL_PATH}" "./scripts/${d_s_b:?}" "${@}"

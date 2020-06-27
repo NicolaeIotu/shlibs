@@ -1,0 +1,19 @@
+# If missing add details; one OS per line, leave field empty if not available
+# Format must match below or the line is not recognized:
+# HighLevelPkgManager:InstallCmd:RemoveCmd:AssumeYesOption
+
+# Fedora
+dnf:dnf install:dnf remove:-y
+yum:yum install:yum remove:-y
+# Debian
+apt-get:apt-get install:apt-get remove:-y
+# OpenSuse
+zypper:zypper install:zypper remove:-y
+# BSDs
+:pkg_add:pkg_delete:
+pkg:pkg install:pkg delete:
+# Other Linux
+apk:apk add:apk del:
+# Solaris
+pkg:pkg install:pkg uninstall:
+:pkgadd:pkgrm:

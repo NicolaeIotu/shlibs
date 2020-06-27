@@ -1,0 +1,4 @@
+l_b_c: ip001
+r_l_s: 1
+k_y_w: ip,external,web,public,ipv4,ipv6,ip-v4,ip-v6
+i_n_f: Get public facing IPv4 (default), or IPv6

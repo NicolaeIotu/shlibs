@@ -1,0 +1,4 @@
+l_b_c: mth005
+r_l_s: 1
+k_y_w: math,random,number,decimal,length,floating,point,precision
+i_n_f: Get a random number in interval 0-1 (adjustable precision)

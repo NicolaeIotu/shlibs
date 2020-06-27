@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # shlibs is Copyright (C) 2020 Nicolae Iotu, nicolae.g.iotu@gmail.com
-# https://shlibs.org, https://shlibs.net       
+# https://shlibs.org, https://shlibs.net
 # License: Apache-2.0 modified with Convergence Terms (LICENSE-section 10)
 # "Use for free. Contribute rather than diverge."
 
@@ -25,7 +25,7 @@ sta() {
 		return 1
 	fi
 	
-	sta_tests='./var/comp/cap/2_shlibs/awk/*'
+	sta_tests="${shlibs_dirpath}/var/comp/cap/2_shlibs/awk/*"
 	for sta_test_file in ${sta_tests}
 	do
 		if [ -d "${sta_test_file}" ]; then

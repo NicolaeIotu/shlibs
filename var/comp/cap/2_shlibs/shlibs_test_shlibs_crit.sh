@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # shlibs is Copyright (C) 2020 Nicolae Iotu, nicolae.g.iotu@gmail.com
-# https://shlibs.org, https://shlibs.net       
+# https://shlibs.org, https://shlibs.net
 # License: Apache-2.0 modified with Convergence Terms (LICENSE-section 10)
 # "Use for free. Contribute rather than diverge."
 
@@ -9,25 +9,25 @@
 
 # TAG: PRE-H/O, TEST
 
-. './var/comp/cap/2_shlibs/shlibs_test_awk.sh'
+. "${shlibs_dirpath}/var/comp/cap/2_shlibs/shlibs_test_awk.sh"
 if [ -z "${SHLIBS_AWK_PATH}" ]; then
 	. "${shlibs_err_path}" 
 	s_err 'Cannot find a suitable version of awk.'
 	exit 1	
 fi
-. './var/comp/cap/2_shlibs/shlibs_test_basename.sh'
+. "${shlibs_dirpath}/var/comp/cap/2_shlibs/shlibs_test_basename.sh"
 if [ -z "${SHLIBS_BASENAME}" ]; then
 	. "${shlibs_err_path}" 
 	s_err 'Cannot find a suitable version of basename.'
 	exit 1	
 fi
-. './var/comp/cap/2_shlibs/shlibs_test_grep.sh'
+. "${shlibs_dirpath}/var/comp/cap/2_shlibs/shlibs_test_grep.sh"
 if [ -z "${SHLIBS_GREP}" ]; then
 	. "${shlibs_err_path}" 
 	s_err 'Cannot find a suitable version of grep, -E or -F option(s) missing.'
 	exit 1	
 fi
-. './var/comp/cap/2_shlibs/shlibs_test_tail.sh'
+. "${shlibs_dirpath}/var/comp/cap/2_shlibs/shlibs_test_tail.sh"
 if [ -z "${SHLIBS_TAIL}" ]; then
 	. "${shlibs_err_path}" 
 	s_err 'Cannot find a suitable version of tail, n option missing.'

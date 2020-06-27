@@ -1,0 +1,4 @@
+l_b_c: port001
+r_l_s: 1
+k_y_w: linux,lsof,ports,ephemeral,temporary,working,free,random,range
+i_n_f: Get random free ephemeral ports

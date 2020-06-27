@@ -1,0 +1,4 @@
+l_b_c: dir002
+r_l_s: 1
+k_y_w: directory,directories,temporary,create,removable,deletable
+i_n_f: Create a temporary directory and return the path to it

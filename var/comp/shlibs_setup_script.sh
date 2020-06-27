@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # shlibs is Copyright (C) 2020 Nicolae Iotu, nicolae.g.iotu@gmail.com
-# https://shlibs.org, https://shlibs.net       
+# https://shlibs.org, https://shlibs.net
 # License: Apache-2.0 modified with Convergence Terms (LICENSE-section 10)
 # "Use for free. Contribute rather than diverge."
 
@@ -174,7 +174,7 @@ Try using -d to specify destination, or change current working directory.'
 		# cleanup destination
 		if [ ${ss_do_clean} -eq 0 ]; then
 			if [ -d "${ss_opts_destination}" ]; then
-				if $(./shlibs dir001 "${ss_opts_destination}") ; then :
+				if $("${shlibs_dirpath}"/shlibs dir001 "${ss_opts_destination}") ; then :
 				else
 					s_err "Could not clean the destination: ${ss_opts_destination}"
 					exit 1
@@ -325,7 +325,7 @@ Try using -d to specify destination, or change current working directory.'
 							
 			
 			# copy main component responsible for running dependencies
-			if cp -f './var/comp/shlibs_run_lib.sh' \
+			if cp -f "${shlibs_dirpath}/var/comp/shlibs_run_lib.sh" \
 				"${ss_opts_destination}/shlibs" ; then
 				# and add x perm
 				if chmod u+x "${ss_opts_destination}/shlibs" 2>/dev/null; then
@@ -369,7 +369,7 @@ ${ss_opts_destination}/shlibs. Try again using a different destination (-d)."
 					"${ss_dest_ptbl}/shlibs_err.sh" ;
 				} ; then :
 			else
-				s_err 'Could not copy shlibs_redir.sh.'
+				s_err 'Could not copy portable components.'
 				return 1
 			fi
 
@@ -430,7 +430,7 @@ sed could not process final replacements.'
 compliant system. Visit https://shlibs.org, https://shlibs.net and get info on how to ensure \
 cross OS compatibility of your scripts.\n" "${ss_opts_destination}"
 				ss_opts_destination_basename="${ss_opts_destination##*/}"
-				printf "Run script with: cd '/path/to/%s' ; . './%s' ( or /bin/sh './%s' )\n" \
+				printf "Run script with: cd '/path/to/%s' ; . "${shlibs_dirpath}/%s' ( or /bin/sh './%s" )\n" \
 				"${ss_opts_destination_basename}" \
 				"${ss_script_fullname}" "${ss_script_fullname}"
 			fi

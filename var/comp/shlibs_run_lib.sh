@@ -11,23 +11,23 @@
 
 if type s_err >/dev/null 2>&1 ; then :
 else
-	. './var/comp/ptbl/shlibs_err.sh'
+	. "${shlibs_dirpath}/var/comp/ptbl/shlibs_err.sh"
 fi
 
 # important format
 if ( echo ${shlibs_redir_vars:?} ) >/dev/null 2>&1 ; then :
 	# development case
 else
-	. './var/comp/ptbl/shlibs_redir.sh'
+	. "${shlibs_dirpath}/var/comp/ptbl/shlibs_redir.sh"
 
 	if [ "${shlibs_redir_vars_flag}" = '0' ]; then
 		unset -v shlibs_redir_vars_flag
 		if [ "${SHLIBS_COMPLEX_PIPE}" = '0' ]; then
 			unset -v SHLIBS_COMPLEX_PIPE
-			./shlibs "${@}" ${shlibs_redir_vars}
+			"${shlibs_dirpath}"/shlibs "${@}" ${shlibs_redir_vars}
 		else
 			unset -v SHLIBS_COMPLEX_PIPE
-			./shlibs "${@}" "${shlibs_redir_vars}"
+			"${shlibs_dirpath}"/shlibs "${@}" "${shlibs_redir_vars}"
 		fi
 		exit ${?}
 	fi
@@ -429,7 +429,7 @@ if [ -f "${rl_lib_path}" ] && [ -r "${rl_lib_path}" ]; then
 					rl_restore_lang
 					
 					# critical: script ops are relative to shlibs_cwd
-					cd "${shlibs_cwd}"	
+					cd "${shlibs_cwd}"
 					if ${rl_dev_code_bn} "${@}" ; then
 						rl_var_script_return_code=0
 					else

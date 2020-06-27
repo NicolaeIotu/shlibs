@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # shlibs is Copyright (C) 2020 Nicolae Iotu, nicolae.g.iotu@gmail.com
-# https://shlibs.org, https://shlibs.net       
+# https://shlibs.org, https://shlibs.net
 # License: Apache-2.0 modified with Convergence Terms (LICENSE-section 10)
 # "Use for free. Contribute rather than diverge."
 
@@ -12,7 +12,7 @@
 SHLIBS_GREP=''
 
 stg() {
-	stg_test_fld='./var/comp/cap/2_shlibs/grep'
+	stg_test_fld="${shlibs_dirpath}/var/comp/cap/2_shlibs/grep"
 	stg_test_file_E="${stg_test_fld}/shlibs_grep_has_-E.sh"
 	stg_test_file_F="${stg_test_fld}/shlibs_grep_has_-F.sh"
 	

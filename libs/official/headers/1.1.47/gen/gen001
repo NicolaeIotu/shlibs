@@ -1,0 +1,6 @@
+l_b_c: gen001
+r_l_s: 1
+k_y_w: generic,package,management,manager,library,libraries,rpm,dnf,yum,apt,apt-get,dpkg,zypper
+k_y_w: system,linux,fedora,debian,opensuse,bsd,solaris,delete,uninstall,add,del
+k_y_w: dnf,yum,apt,apt-get,zypper,pkg,pkg_add,pkg_delete,apk,pkgadd,pkgrm
+i_n_f: Install/remove packages or show package management tools (i.e. install, remove)

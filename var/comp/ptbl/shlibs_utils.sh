@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # shlibs is Copyright (C) 2020 Nicolae Iotu, nicolae.g.iotu@gmail.com
-# https://shlibs.org, https://shlibs.net       
+# https://shlibs.org, https://shlibs.net
 # License: Apache-2.0 modified with Convergence Terms (LICENSE-section 10)
 # "Use for free. Contribute rather than diverge."
 
@@ -16,8 +16,8 @@ _nl=$(printf '%b' '\n\r')
 IRS=$(printf '\036')
 
 # shlibs version
-SHLIBS_VERSION=1.3.35
-SHLIBS_RELEASE=4
+SHLIBS_VERSION=1.4.39
+SHLIBS_RELEASE=5
 
 # the email for requests
 SHLIBS_REQUESTS='contact@shlibs.net'
@@ -37,7 +37,7 @@ su_cleanup_tmp() {
 su_cleanup_tmp_onexit() {
 	# this cleanup of tmp includes active session
 	su_cleanup_tmp
-	./shlibs dir001 "./var/tmp/${shlibs_session:?}" &
+	"${shlibs_dirpath}"/shlibs dir001 "./var/tmp/${shlibs_session:?}" &
 	wait
 	#important
 	echo ' '

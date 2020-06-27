@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # shlibs is Copyright (C) 2020 Nicolae Iotu, nicolae.g.iotu@gmail.com
-# https://shlibs.org, https://shlibs.net       
+# https://shlibs.org, https://shlibs.net
 # License: Apache-2.0 modified with Convergence Terms (LICENSE-section 10)
 # "Use for free. Contribute rather than diverge."
 
@@ -18,7 +18,8 @@ s_err() {
 		# log administration
 		sg_ld="${shlibs_dirpath}/var/log"
 		sg_el="${sg_ld}/error.log"
-		if [ -f "${sg_el}" ] && [ -r "${sg_el}" ] && [ -w "${sg_el}" ] ; then
+		if [ -e "${sg_el}" ]; then
+			# log administration
 			sg_log_lines=`wc -l "${sg_el}" 2>/dev/null | xargs echo`
 			sg_log_lines=${sg_log_lines% *}
 			
@@ -43,6 +44,8 @@ s_err() {
 				
 				mv -f "${sg_el}" "${sg_el}.1"
 			fi
+		else
+			touch "${sg_el}"
 		fi
 		
 		# show main error message
