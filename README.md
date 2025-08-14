@@ -44,8 +44,7 @@ More instructions to follow.
 	**shlibs**
 
 4. Use '**shlibs libcode**' in your CLI or script<br>
-	(see [https://shlibs.net](https://shlibs.net), 
-	[https://shlibs.org](https://shlibs.org) for details), or
+	(see [https://shlibs.org](https://shlibs.org) for details), or
 
 5. Include plain '**shlibs**' in your script and run setup:<br>
 	**shlibs -s path/to/script**
